@@ -164,18 +164,23 @@
     visibility: visible;
   }
 
-  /* Absolute position the resume at the top-left of the paper */
+  /* Reset margins and ensure the resume sits perfectly at the top-left */
   .print-styles {
-    position: absolute !important;
+    position: fixed !important;
     left: 0 !important;
     top: 0 !important;
     width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
     box-shadow: none !important;
     border: none !important;
+    overflow: visible !important;
   }
 
   @page {
-    margin: 0;
+    size: A4 portrait;
+    margin: 0mm;
     /* hide default browser header and footer */
   }
 }

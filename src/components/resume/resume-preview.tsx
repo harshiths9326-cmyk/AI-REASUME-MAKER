@@ -706,11 +706,16 @@ export function ResumePreview({ data, template = "modern" }: ResumePreviewProps)
         setIsDownloading(true);
         // Small timeout allows the UI loader to spin before locking the main thread for printing
         setTimeout(() => {
+            const originalScrollPos = window.scrollY;
+            window.scrollTo(0, 0); // Force top scroll so print doesn't inherit a scroll offset
+
             document.title = `${personalInfo.firstName || "resume"}_${personalInfo.lastName || "document"}`;
             window.print();
+
             setIsDownloading(false);
-            // Revert title
+            // Revert title and scroll
             document.title = "AI Resume Maker";
+            window.scrollTo(0, originalScrollPos);
         }, 100);
     };
 
