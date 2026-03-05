@@ -65,7 +65,7 @@ export function Experience({ data, updateData }: ExperienceProps) {
             }
         } catch (error) {
             console.error("Error generating text:", error)
-            alert("Failed to generate text using AI. Please ensure you have configured your OPENAI_API_KEY.")
+            alert("Failed to generate text using AI. Please ensure you have configured your OPENROUTER_API_KEY.")
         } finally {
             setGeneratingId(null)
         }

@@ -6,13 +6,20 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    setIsLoggedIn(!!sessionStorage.getItem("ai_resume_user"));
-  }, []);
+    const user = sessionStorage.getItem("ai_resume_user");
+    if (user) {
+      router.replace("/templates");
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, [router]);
 
   const authHref = isLoggedIn ? "/templates" : "/login";
 
