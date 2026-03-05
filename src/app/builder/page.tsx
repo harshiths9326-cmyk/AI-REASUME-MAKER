@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation"
 import { initialResumeData, ResumeData } from "@/lib/types"
 import { ResumeForm } from "@/components/resume/resume-form"
 import { ResumePreview } from "@/components/resume/resume-preview"
+import { useAuthGuard } from "@/hooks/use-auth-guard"
 
 function BuilderContent() {
     const searchParams = useSearchParams()
@@ -31,6 +32,12 @@ function BuilderContent() {
 }
 
 export default function BuilderPage() {
+    const { isAuthed } = useAuthGuard()
+
+    if (!isAuthed) {
+        return <div className="flex justify-center items-center h-[calc(100vh-4rem)]">Checking authentication...</div>
+    }
+
     return (
         <div className="container mx-auto max-w-[1600px] h-[calc(100vh-4rem)] p-4 relative z-0">
             <Suspense fallback={<div className="flex justify-center items-center h-full">Loading builder...</div>}>
@@ -39,3 +46,4 @@ export default function BuilderPage() {
         </div>
     )
 }
+

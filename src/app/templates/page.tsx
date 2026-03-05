@@ -5,6 +5,7 @@ import { ArrowRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { motion } from "framer-motion";
+import { useAuthGuard } from "@/hooks/use-auth-guard"
 
 const templates = [
     {
@@ -31,6 +32,8 @@ const templates = [
 ];
 
 export default function TemplatesPage() {
+    const { isAuthed } = useAuthGuard()
+
     const container = {
         hidden: { opacity: 0 },
         show: {
@@ -40,6 +43,11 @@ export default function TemplatesPage() {
             }
         }
     };
+
+    if (!isAuthed) {
+        return <div className="flex justify-center items-center h-[calc(100vh-4rem)]">Checking authentication...</div>
+    }
+
 
     const item = {
         hidden: { opacity: 0, y: 20 },

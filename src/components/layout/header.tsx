@@ -12,9 +12,11 @@ export function Header() {
     const pathname = usePathname()
     const [userEmail, setUserEmail] = useState<string | null>(null)
     const [userName, setUserName] = useState<string | null>(null)
+    const [mounted, setMounted] = useState(false)
 
     // Re-read session whenever the route changes (handles post-login redirect)
     useEffect(() => {
+        setMounted(true)
         const email = sessionStorage.getItem("ai_resume_user")
         const name = sessionStorage.getItem("ai_resume_name")
         setUserEmail(email)
@@ -29,6 +31,7 @@ export function Header() {
         setUserName(null)
         router.push("/")
     }
+
 
     // Show first letter of name or email as avatar
     const avatar = userName
@@ -47,54 +50,57 @@ export function Header() {
 
                 <div className="flex flex-1 items-center justify-end space-x-3">
                     <nav className="flex items-center space-x-3">
-                        {userEmail ? (
-                            <>
-                                {/* Logged-in user badge */}
-                                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-sm">
-                                    <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold">
-                                        {avatar}
+                        {mounted && (
+                            userEmail ? (
+                                <>
+                                    {/* Logged-in user badge */}
+                                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-sm">
+                                        <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold">
+                                            {avatar}
+                                        </div>
+                                        <span className="text-primary font-medium hidden sm:block max-w-[140px] truncate">
+                                            {userName || userEmail}
+                                        </span>
                                     </div>
-                                    <span className="text-primary font-medium hidden sm:block max-w-[140px] truncate">
-                                        {userName || userEmail}
-                                    </span>
-                                </div>
 
-                                {/* My Resumes shortcut */}
-                                <Link href="/builder">
-                                    <Button variant="outline" size="sm">
-                                        My Resume
-                                    </Button>
-                                </Link>
+                                    {/* My Resumes shortcut */}
+                                    <Link href="/builder">
+                                        <Button variant="outline" size="sm">
+                                            My Resume
+                                        </Button>
+                                    </Link>
 
-                                {/* Sign Out */}
-                                <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={handleSignOut}
-                                    className="text-muted-foreground hover:text-destructive"
-                                    title="Sign Out"
-                                >
-                                    <LogOut className="h-4 w-4" />
-                                    <span className="ml-1 hidden sm:inline">Sign Out</span>
-                                </Button>
-                            </>
-                        ) : (
-                            <>
-                                <Link href="/login">
-                                    <Button variant="ghost" size="sm">
-                                        Sign In
+                                    {/* Sign Out */}
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={handleSignOut}
+                                        className="text-muted-foreground hover:text-destructive"
+                                        title="Sign Out"
+                                    >
+                                        <LogOut className="h-4 w-4" />
+                                        <span className="ml-1 hidden sm:inline">Sign Out</span>
                                     </Button>
-                                </Link>
-                                <Link href="/login">
-                                    <Button variant="default" size="sm">
-                                        Build Resume
-                                    </Button>
-                                </Link>
-                            </>
+                                </>
+                            ) : (
+                                <>
+                                    <Link href="/login">
+                                        <Button variant="ghost" size="sm">
+                                            Sign In
+                                        </Button>
+                                    </Link>
+                                    <Link href="/login">
+                                        <Button variant="default" size="sm">
+                                            Build Resume
+                                        </Button>
+                                    </Link>
+                                </>
+                            )
                         )}
                         <ThemeToggle />
                     </nav>
                 </div>
+
             </div>
         </header>
     )
