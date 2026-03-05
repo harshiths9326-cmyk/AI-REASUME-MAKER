@@ -22,20 +22,19 @@ export default function LoginPage() {
         setError("");
 
         try {
-            // In a real app we'd use Supabase auth:
-            // const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+            // Simulate successful login — in production this would be Supabase Auth
+            await new Promise((res) => setTimeout(res, 800));
 
-            // For this demo, we'll just simulate a successful login 
-            // and redirect to the templates selection page
-            setTimeout(() => {
-                router.push("/templates");
-            }, 1000);
+            // Save session so the header can show logged-in state
+            sessionStorage.setItem("ai_resume_user", email || "user@example.com");
 
+            router.push("/templates");
         } catch (err: any) {
             setError(err?.message || "Failed to login. Please try again.");
             setIsLoading(false);
         }
     };
+
 
     return (
         <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center p-4 bg-muted/30">
@@ -117,10 +116,12 @@ export default function LoginPage() {
                             type="button"
                             variant="outline"
                             className="w-full font-bold h-11"
-                            onClick={() => {
-                                // Google Auth simulation
+                            onClick={async () => {
                                 setIsLoading(true)
-                                setTimeout(() => router.push("/templates"), 1000)
+                                await new Promise((res) => setTimeout(res, 800))
+                                sessionStorage.setItem("ai_resume_user", "google@gmail.com")
+                                sessionStorage.setItem("ai_resume_name", "Google User")
+                                router.push("/templates")
                             }}
                         >
                             <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">

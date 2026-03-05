@@ -23,10 +23,14 @@ export default function SignupPage() {
         setError("");
 
         try {
-            // Simulated Signup logic
-            setTimeout(() => {
-                router.push("/templates");
-            }, 1000);
+            // Simulated signup — in production this would be Supabase Auth
+            await new Promise((res) => setTimeout(res, 800));
+
+            // Save session
+            sessionStorage.setItem("ai_resume_user", email || "user@example.com");
+            if (name) sessionStorage.setItem("ai_resume_name", name);
+
+            router.push("/templates");
         } catch (err: any) {
             setError(err?.message || "Failed to sign up. Please try again.");
             setIsLoading(false);
@@ -125,9 +129,12 @@ export default function SignupPage() {
                             type="button"
                             variant="outline"
                             className="w-full font-bold h-11"
-                            onClick={() => {
+                            onClick={async () => {
                                 setIsLoading(true)
-                                setTimeout(() => router.push("/templates"), 1000)
+                                await new Promise((res) => setTimeout(res, 800))
+                                sessionStorage.setItem("ai_resume_user", "google@gmail.com")
+                                sessionStorage.setItem("ai_resume_name", "Google User")
+                                router.push("/templates")
                             }}
                         >
                             <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
