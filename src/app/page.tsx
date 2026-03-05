@@ -5,8 +5,17 @@ import { ArrowRight, Bot, FileText, Download, CheckCircle2 } from "lucide-react"
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    setIsLoggedIn(!!sessionStorage.getItem("ai_resume_user"));
+  }, []);
+
+  const authHref = isLoggedIn ? "/templates" : "/login";
+
   const fadeIn = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
@@ -21,6 +30,7 @@ export default function Home() {
       }
     }
   };
+
 
   return (
     <div className="flex flex-col min-h-[calc(100vh-4rem)]">
@@ -43,7 +53,7 @@ export default function Home() {
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link href="/login">
+              <Link href={authHref}>
                 <Button size="lg" className="px-8 h-12 rounded-full font-semibold transition-transform hover:scale-105">
                   Get Started for Free <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -80,7 +90,7 @@ export default function Home() {
                 icon: Bot,
                 title: "AI-Powered Writing",
                 desc: "Generate professional bullet points and summaries based on your raw input.",
-                href: "/login",
+                href: authHref,
                 cta: "Try AI Writing",
               },
               {
@@ -94,7 +104,7 @@ export default function Home() {
                 icon: Download,
                 title: "One-Click PDF Export",
                 desc: "Download your polished resume instantly as a perfectly formatted PDF.",
-                href: "/login",
+                href: authHref,
                 cta: "Build & Export",
               },
             ].map((feature, idx) => (
@@ -173,7 +183,7 @@ export default function Home() {
           <p className="text-primary-foreground/80 md:text-xl">
             Join thousands of job seekers who landed their dream jobs using AI Resume Maker.
           </p>
-          <Link href="/login">
+          <Link href={authHref}>
             <Button size="lg" variant="secondary" className="px-8 h-12 rounded-full font-bold text-primary transition-transform hover:scale-105 hover:bg-secondary/90">
               Create My Resume Now
             </Button>

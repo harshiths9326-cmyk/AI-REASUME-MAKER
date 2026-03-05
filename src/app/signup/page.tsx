@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/lib/supabase";
+import { useEffect } from "react";
 
 export default function SignupPage() {
     const router = useRouter();
@@ -16,6 +17,14 @@ export default function SignupPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+
+    // If already logged in, redirect to templates
+    useEffect(() => {
+        const user = sessionStorage.getItem("ai_resume_user");
+        if (user) {
+            router.replace("/templates");
+        }
+    }, [router]);
 
     const handleSignup = async (e: React.FormEvent) => {
         e.preventDefault();
