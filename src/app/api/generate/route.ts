@@ -39,7 +39,7 @@ export async function POST(req: Request) {
         }
 
         const response = await openai.chat.completions.create({
-            model: "meta-llama/llama-3-8b-instruct:free", // You can switch to any other model available on OpenRouter
+            model: "meta-llama/llama-3-8b-instruct", // Standard Llama 3 is highly available
             messages: [
                 {
                     role: "system",
@@ -57,10 +57,15 @@ export async function POST(req: Request) {
         const generatedText = response.choices[0]?.message?.content?.trim() || ""
 
         return NextResponse.json({ text: generatedText })
-    } catch (error) {
-        console.error("OpenAI Error:", error)
+    } catch (error: any) {
+        // Detailed error logging for debugging
+        console.error("OpenAI/OpenRouter Error:", error)
+        if (error.response) {
+            console.error("Response data:", error.response.data)
+        }
+
         return NextResponse.json(
-            { error: "Failed to generate content. Please try again." },
+            { error: error?.message || "Failed to generate content. Please try again." },
             { status: 500 }
         )
     }

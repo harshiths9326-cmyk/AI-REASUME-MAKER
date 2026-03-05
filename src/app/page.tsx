@@ -43,7 +43,7 @@ export default function Home() {
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link href="/builder">
+              <Link href="/login">
                 <Button size="lg" className="px-8 h-12 rounded-full font-semibold transition-transform hover:scale-105">
                   Get Started for Free <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -147,7 +147,7 @@ export default function Home() {
           <p className="text-primary-foreground/80 md:text-xl">
             Join thousands of job seekers who landed their dream jobs using ProResume AI.
           </p>
-          <Link href="/builder">
+          <Link href="/login">
             <Button size="lg" variant="secondary" className="px-8 h-12 rounded-full font-bold text-primary transition-transform hover:scale-105 hover:bg-secondary/90">
               Create My Resume Now
             </Button>
