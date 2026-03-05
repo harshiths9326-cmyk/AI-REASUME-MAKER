@@ -11,21 +11,21 @@ const templates = [
         id: "modern",
         name: "Modern AI",
         description: "Clean, ATS-friendly design perfect for tech and creative roles.",
-        image: "https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=800&q=80",
+        image: "/templates/modern.png",
         popular: true,
     },
     {
         id: "professional",
         name: "Corporate Standard",
         description: "Traditional layout optimized for finance, law, and corporate fields.",
-        image: "https://images.unsplash.com/photo-1626125345510-4603468eed2a?w=800&q=80",
+        image: "/templates/corporate.png",
         popular: false,
     },
     {
         id: "creative",
         name: "Portfolio Creative",
         description: "Stand out with bold typography and a unique two-column structure.",
-        image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&q=80",
+        image: "/templates/creative.png",
         popular: false,
     }
 ];
