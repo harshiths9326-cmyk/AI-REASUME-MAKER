@@ -17,7 +17,7 @@ interface ResumeFormProps {
 
 export function ResumeForm({ data, updateData }: ResumeFormProps) {
     const [isSaving, setIsSaving] = useState(false)
-    const [savedStatus, setSavedStatus] = useState<"idle" | "saved" | "error">("idle")
+    const [savedStatus, setSavedStatus] = useState<"idle" | "saved" | string>("idle")
 
     const handleSave = async () => {
         try {
@@ -47,12 +47,12 @@ export function ResumeForm({ data, updateData }: ResumeFormProps) {
                 setSavedStatus("saved")
                 setTimeout(() => setSavedStatus("idle"), 3000)
             } else {
-                setSavedStatus("error")
+                setSavedStatus(result.error || "error")
                 console.error("Save error:", result.error)
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error saving resume:", error)
-            setSavedStatus("error")
+            setSavedStatus(error?.message || "error")
         } finally {
             setIsSaving(false)
         }
@@ -80,9 +80,12 @@ export function ResumeForm({ data, updateData }: ResumeFormProps) {
                 </Button>
             </div>
 
-            {savedStatus === "error" && (
+            {savedStatus !== "idle" && savedStatus !== "saved" && (
                 <div className="p-3 bg-destructive/10 text-destructive text-sm text-center border-b font-medium">
-                    Failed to save to database. Please check your Supabase credentials.
+                    {savedStatus === "error"
+                        ? "Failed to save to database. Please check your Supabase credentials."
+                        : `Error: ${savedStatus}`
+                    }
                 </div>
             )}
 

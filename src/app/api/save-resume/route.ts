@@ -20,16 +20,16 @@ export async function POST(req: Request) {
         if (error) {
             console.error("Supabase error:", error)
             return NextResponse.json(
-                { error: "Failed to save to database" },
+                { error: `Database error: ${error.message}` },
                 { status: 500 }
             )
         }
 
         return NextResponse.json({ success: true, resume: result[0] })
-    } catch (error) {
+    } catch (error: any) {
         console.error("Save Resume Error:", error)
         return NextResponse.json(
-            { error: "Failed to save resume. Please try again." },
+            { error: error?.message || "Failed to save resume. Please try again." },
             { status: 500 }
         )
     }
