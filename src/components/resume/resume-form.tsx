@@ -8,6 +8,10 @@ import { Experience } from "./experience"
 import { Education } from "./education"
 import { Skills } from "./skills"
 import { Projects } from "./projects"
+import { Certifications } from "./certifications"
+import { Achievements } from "./achievements"
+import { Languages } from "./languages"
+import { Links } from "./links"
 import { ResumeData } from "@/lib/types"
 
 interface ResumeFormProps {
@@ -24,21 +28,14 @@ export function ResumeForm({ data, updateData }: ResumeFormProps) {
             setIsSaving(true)
             setSavedStatus("idle")
 
-            // We generate a deterministic ID based on the user's name for simplicity,
-            // or use a static "preview" id if no name is provided yet.
             const resumeId = data.personalInfo.firstName
                 ? `${data.personalInfo.firstName.toLowerCase()}-${data.personalInfo.lastName.toLowerCase()}`
                 : "draft-resume"
 
             const response = await fetch("/api/save-resume", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    id: resumeId,
-                    data: data,
-                }),
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: resumeId, data }),
             })
 
             const result = await response.json()
@@ -82,10 +79,7 @@ export function ResumeForm({ data, updateData }: ResumeFormProps) {
 
             {savedStatus !== "idle" && savedStatus !== "saved" && (
                 <div className="p-3 bg-destructive/10 text-destructive text-sm text-center border-b font-medium">
-                    {savedStatus === "error"
-                        ? "Failed to save to database. Please check your Supabase credentials."
-                        : `Error: ${savedStatus}`
-                    }
+                    {`Error: ${savedStatus}`}
                 </div>
             )}
 
@@ -94,33 +88,53 @@ export function ResumeForm({ data, updateData }: ResumeFormProps) {
                     data={data.personalInfo}
                     updateData={(info: any) => updateData({ personalInfo: info })}
                 />
-
                 <hr className="my-8" />
 
                 <Experience
                     data={data.experience}
                     updateData={(exp: any) => updateData({ experience: exp })}
                 />
-
                 <hr className="my-8" />
 
                 <Education
                     data={data.education}
                     updateData={(edu: any) => updateData({ education: edu })}
                 />
-
                 <hr className="my-8" />
 
                 <Skills
                     data={data.skills}
-                    updateData={(skills: any) => updateData({ skills: skills })}
+                    updateData={(skills: any) => updateData({ skills })}
                 />
-
                 <hr className="my-8" />
 
                 <Projects
                     data={data.projects}
-                    updateData={(projects: any) => updateData({ projects: projects })}
+                    updateData={(projects: any) => updateData({ projects })}
+                />
+                <hr className="my-8" />
+
+                <Certifications
+                    data={data.certifications}
+                    updateData={(certifications: any) => updateData({ certifications })}
+                />
+                <hr className="my-8" />
+
+                <Achievements
+                    data={data.achievements}
+                    updateData={(achievements: any) => updateData({ achievements })}
+                />
+                <hr className="my-8" />
+
+                <Languages
+                    data={data.languages}
+                    updateData={(languages: any) => updateData({ languages })}
+                />
+                <hr className="my-8" />
+
+                <Links
+                    data={data.links}
+                    updateData={(links: any) => updateData({ links })}
                 />
             </div>
         </div>

@@ -39,12 +39,42 @@ export interface Project {
     link: string;
 }
 
+export interface Certification {
+    id: string;
+    name: string;
+    issuer: string;
+    date: string;
+    url: string;
+}
+
+export interface Achievement {
+    id: string;
+    title: string;
+    description: string;
+}
+
+export interface Language {
+    id: string;
+    language: string;
+    proficiency: string; // e.g. Native, Fluent, Intermediate, Basic
+}
+
+export interface Link {
+    id: string;
+    label: string; // e.g. GitHub, Portfolio, LinkedIn
+    url: string;
+}
+
 export interface ResumeData {
     personalInfo: PersonalInfo;
     experience: Experience[];
     education: Education[];
     skills: Skill[];
     projects: Project[];
+    certifications: Certification[];
+    achievements: Achievement[];
+    languages: Language[];
+    links: Link[];
 }
 
 export const initialResumeData: ResumeData = {
@@ -62,4 +92,9 @@ export const initialResumeData: ResumeData = {
     education: [],
     skills: [],
     projects: [],
+    certifications: [],
+    achievements: [],
+    languages: [],
+    links: [],
 };
+
