@@ -2,23 +2,25 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { FileText, LogOut, User } from "lucide-react"
+import { useRouter, usePathname } from "next/navigation"
+import { FileText, LogOut } from "lucide-react"
 import { ThemeToggle } from "./theme-toggle"
 import { Button } from "@/components/ui/button"
 
 export function Header() {
     const router = useRouter()
+    const pathname = usePathname()
     const [userEmail, setUserEmail] = useState<string | null>(null)
     const [userName, setUserName] = useState<string | null>(null)
 
-    // Read session from sessionStorage (client-side only)
+    // Re-read session whenever the route changes (handles post-login redirect)
     useEffect(() => {
         const email = sessionStorage.getItem("ai_resume_user")
         const name = sessionStorage.getItem("ai_resume_name")
         setUserEmail(email)
         setUserName(name)
-    }, [])
+    }, [pathname])
+
 
     const handleSignOut = () => {
         sessionStorage.removeItem("ai_resume_user")
