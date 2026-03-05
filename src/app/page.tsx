@@ -63,7 +63,7 @@ export default function Home() {
             viewport={{ once: true, amount: 0.8 }}
             variants={fadeIn}
           >
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">Why choose ProResume AI?</h2>
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">Why choose AI Resume Maker?</h2>
             <p className="mt-4 text-muted-foreground md:text-lg max-w-2xl mx-auto">
               Everything you need to create a standout resume, powered by cutting-edge artificial intelligence.
             </p>
@@ -145,7 +145,7 @@ export default function Home() {
         >
           <h2 className="text-3xl font-bold sm:text-4xl md:text-5xl">Ready to build your resume?</h2>
           <p className="text-primary-foreground/80 md:text-xl">
-            Join thousands of job seekers who landed their dream jobs using ProResume AI.
+            Join thousands of job seekers who landed their dream jobs using AI Resume Maker.
           </p>
           <Link href="/login">
             <Button size="lg" variant="secondary" className="px-8 h-12 rounded-full font-bold text-primary transition-transform hover:scale-105 hover:bg-secondary/90">

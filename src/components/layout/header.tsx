@@ -10,7 +10,7 @@ export function Header() {
             <div className="container mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
                 <Link href="/" className="flex items-center space-x-2">
                     <FileText className="h-6 w-6 text-primary" />
-                    <span className="font-bold inline-block">ProResume AI</span>
+                    <span className="font-bold inline-block">AI Resume Maker</span>
                 </Link>
                 <div className="flex flex-1 items-center justify-end space-x-4">
                     <nav className="flex items-center space-x-2">
