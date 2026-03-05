@@ -3,58 +3,71 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Mail, Lock, Loader2, ArrowRight } from "lucide-react";
+import { Mail, Lock, User, Loader2, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/lib/supabase";
 
-export default function LoginPage() {
+export default function SignupPage() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
+    const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
 
-    const handleLogin = async (e: React.FormEvent) => {
+    const handleSignup = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
         setError("");
 
         try {
-            // In a real app we'd use Supabase auth:
-            // const { data, error } = await supabase.auth.signInWithPassword({ email, password })
-
-            // For this demo, we'll just simulate a successful login 
-            // and redirect to the templates selection page
+            // Simulated Signup logic
             setTimeout(() => {
                 router.push("/templates");
             }, 1000);
-
         } catch (err: any) {
-            setError(err?.message || "Failed to login. Please try again.");
+            setError(err?.message || "Failed to sign up. Please try again.");
             setIsLoading(false);
         }
     };
 
     return (
         <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center p-4 bg-muted/30">
-            <Card className="w-full max-w-md shadow-xl border-t-4 border-t-primary">
+            <Card className="w-full max-w-md shadow-xl border-t-4 border-t-secondary">
                 <CardHeader className="space-y-2 text-center pb-6">
-                    <CardTitle className="text-3xl font-bold tracking-tight">Welcome Back</CardTitle>
+                    <CardTitle className="text-3xl font-bold tracking-tight">Create an Account</CardTitle>
                     <CardDescription className="text-base">
-                        Log in to access your resumes and templates.
+                        Get started building your AI-powered resume today.
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <form onSubmit={handleLogin} className="space-y-4">
+                    <form onSubmit={handleSignup} className="space-y-4">
                         {error && (
                             <div className="p-3 bg-destructive/10 text-destructive text-sm rounded-md text-center">
                                 {error}
                             </div>
                         )}
                         <div className="space-y-2">
-                            <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" htmlFor="email">
+                            <label className="text-sm font-medium leading-none" htmlFor="name">
+                                Full Name
+                            </label>
+                            <div className="relative">
+                                <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                                <Input
+                                    id="name"
+                                    type="text"
+                                    placeholder="Jane Doe"
+                                    className="pl-9"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    required
+                                />
+                            </div>
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium leading-none" htmlFor="email">
                                 Email
                             </label>
                             <div className="relative">
@@ -71,14 +84,9 @@ export default function LoginPage() {
                             </div>
                         </div>
                         <div className="space-y-2">
-                            <div className="flex items-center justify-between">
-                                <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" htmlFor="password">
-                                    Password
-                                </label>
-                                <Link href="#" className="text-sm font-medium text-primary hover:underline">
-                                    Forgot password?
-                                </Link>
-                            </div>
+                            <label className="text-sm font-medium leading-none" htmlFor="password">
+                                Password
+                            </label>
                             <div className="relative">
                                 <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                                 <Input
@@ -91,15 +99,15 @@ export default function LoginPage() {
                                 />
                             </div>
                         </div>
-                        <Button type="submit" className="w-full font-bold h-11 mt-2" disabled={isLoading}>
+                        <Button type="submit" variant="secondary" className="w-full font-bold h-11 mt-2 text-primary" disabled={isLoading}>
                             {isLoading ? (
                                 <>
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    Signing In...
+                                    Creating Account...
                                 </>
                             ) : (
                                 <>
-                                    Sign In <ArrowRight className="ml-2 h-4 w-4" />
+                                    Sign Up <UserPlus className="ml-2 h-4 w-4" />
                                 </>
                             )}
                         </Button>
@@ -109,7 +117,7 @@ export default function LoginPage() {
                                 <span className="w-full border-t" />
                             </div>
                             <div className="relative flex justify-center text-xs uppercase">
-                                <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
+                                <span className="bg-card px-2 text-muted-foreground">Or sign up with</span>
                             </div>
                         </div>
 
@@ -118,7 +126,6 @@ export default function LoginPage() {
                             variant="outline"
                             className="w-full font-bold h-11"
                             onClick={() => {
-                                // Google Auth simulation
                                 setIsLoading(true)
                                 setTimeout(() => router.push("/templates"), 1000)
                             }}
@@ -142,19 +149,19 @@ export default function LoginPage() {
                                 />
                                 <path d="M1 1h22v22H1z" fill="none" />
                             </svg>
-                            Sign In with Google
+                            Sign Up with Google
                         </Button>
                     </form>
                 </CardContent>
                 <CardFooter className="flex flex-col space-y-4 text-center border-t p-6 mt-2">
                     <div className="text-sm text-muted-foreground">
-                        Don't have an account?{" "}
-                        <Link href="/signup" className="font-semibold text-primary hover:underline">
-                            Sign up
+                        Already have an account?{" "}
+                        <Link href="/login" className="font-semibold text-primary hover:underline">
+                            Log in
                         </Link>
                     </div>
                 </CardFooter>
-            </Card >
-        </div >
+            </Card>
+        </div>
     );
 }
