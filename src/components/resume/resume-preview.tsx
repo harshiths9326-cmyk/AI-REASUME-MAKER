@@ -702,21 +702,74 @@ export function ResumePreview({ data, template = "modern" }: ResumePreviewProps)
     const targetRef = useRef<HTMLDivElement>(null)
     const [isDownloading, setIsDownloading] = useState(false)
 
-    const downloadPdf = () => {
+    const downloadPdf = async () => {
+        if (!targetRef.current) return;
         setIsDownloading(true);
-        // Small timeout allows the UI loader to spin before locking the main thread for printing
-        setTimeout(() => {
-            const originalScrollPos = window.scrollY;
-            window.scrollTo(0, 0); // Force top scroll so print doesn't inherit a scroll offset
 
-            document.title = `${personalInfo.firstName || "resume"}_${personalInfo.lastName || "document"}`;
-            window.print();
+        try {
+            const html2canvas = (await import("html2canvas")).default;
+            const { jsPDF } = await import("jspdf");
 
+            const element = targetRef.current;
+
+            // Backup styles to ensure clean screenshot
+            const prevBackground = element.style.backgroundColor;
+            element.style.backgroundColor = "#ffffff";
+
+            const canvas = await html2canvas(element, {
+                scale: 2, // High resolution
+                useCORS: true,
+                backgroundColor: "#ffffff",
+                logging: false,
+                windowWidth: element.scrollWidth,
+                windowHeight: element.scrollHeight
+            });
+
+            // Restore styles
+            element.style.backgroundColor = prevBackground;
+
+            const imgData = canvas.toDataURL("image/jpeg", 0.98);
+
+            // Create standard A4 PDF (210mm x 297mm)
+            const pdf = new jsPDF({
+                orientation: "portrait",
+                unit: "mm",
+                format: "a4",
+            });
+
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+
+            // Calculate ratio to scale image down
+            const imgWidth = canvas.width;
+            const imgHeight = canvas.height;
+            const imgRatio = imgWidth / imgHeight;
+
+            let finalWidth = pdfWidth;
+            let finalHeight = finalWidth / imgRatio;
+
+            // OVERRIDE: If the scaled height is taller than 1 page, shrink it further!
+            // This guarantees it prints on exactly ONE page.
+            if (finalHeight > pdfHeight) {
+                finalHeight = pdfHeight;
+                finalWidth = finalHeight * imgRatio;
+            }
+
+            // Center image horizontally if it was squeezed
+            const xOffset = (pdfWidth - finalWidth) / 2;
+
+            pdf.addImage(imgData, "JPEG", xOffset, 0, finalWidth, finalHeight);
+
+            const filename = `${personalInfo.firstName || "resume"}_${personalInfo.lastName || "document"}.pdf`;
+            pdf.save(filename);
+
+        } catch (error) {
+            console.error("PDF generation failed:", error);
+            // @ts-ignore
+            alert(`Download failed: ${error.message || error}`);
+        } finally {
             setIsDownloading(false);
-            // Revert title and scroll
-            document.title = "AI Resume Maker";
-            window.scrollTo(0, originalScrollPos);
-        }, 100);
+        }
     };
 
     const renderTemplate = () => {
