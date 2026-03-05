@@ -76,21 +76,47 @@ export default function Home() {
             variants={staggerContainer}
           >
             {[
-              { icon: Bot, title: "AI-Powered Writing", desc: "Generate professional bullet points and summaries based on your raw input." },
-              { icon: FileText, title: "ATS-Friendly Designs", desc: "Clean, modern templates designed to pass Applicant Tracking Systems flawlessly." },
-              { icon: Download, title: "One-Click PDF Export", desc: "Download your polished resume instantly as a perfectly formatted PDF." }
+              {
+                icon: Bot,
+                title: "AI-Powered Writing",
+                desc: "Generate professional bullet points and summaries based on your raw input.",
+                href: "/login",
+                cta: "Try AI Writing",
+              },
+              {
+                icon: FileText,
+                title: "ATS-Friendly Designs",
+                desc: "Clean, modern templates designed to pass Applicant Tracking Systems flawlessly.",
+                href: "/templates",
+                cta: "Browse Templates",
+              },
+              {
+                icon: Download,
+                title: "One-Click PDF Export",
+                desc: "Download your polished resume instantly as a perfectly formatted PDF.",
+                href: "/login",
+                cta: "Build & Export",
+              },
             ].map((feature, idx) => (
               <motion.div key={idx} variants={fadeIn}>
-                <Card className="bg-background/60 backdrop-blur border-none shadow-md hover:shadow-lg transition-shadow h-full">
-                  <CardHeader>
-                    <feature.icon className="h-10 w-10 text-primary mb-4" />
-                    <CardTitle>{feature.title}</CardTitle>
-                    <CardDescription>{feature.desc}</CardDescription>
-                  </CardHeader>
-                </Card>
+                <Link href={feature.href} className="group block h-full">
+                  <Card className="bg-background/60 backdrop-blur border-none shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 h-full cursor-pointer">
+                    <CardHeader>
+                      <feature.icon className="h-10 w-10 text-primary mb-4 group-hover:scale-110 transition-transform duration-300" />
+                      <CardTitle>{feature.title}</CardTitle>
+                      <CardDescription>{feature.desc}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <span className="inline-flex items-center gap-1 text-sm font-semibold text-primary group-hover:gap-2 transition-all duration-200">
+                        {feature.cta} <ArrowRight className="h-4 w-4" />
+                      </span>
+                    </CardContent>
+                  </Card>
+                </Link>
               </motion.div>
             ))}
           </motion.div>
+
         </div>
       </section>
 
