@@ -1,7 +1,6 @@
 "use client"
 
 import { useRef, useState } from "react"
-import { useReactToPrint } from "react-to-print"
 import { Download, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ResumeData } from "@/lib/types"
@@ -703,17 +702,17 @@ export function ResumePreview({ data, template = "modern" }: ResumePreviewProps)
     const targetRef = useRef<HTMLDivElement>(null)
     const [isDownloading, setIsDownloading] = useState(false)
 
-    const downloadPdf = useReactToPrint({
-        contentRef: targetRef,
-        documentTitle: `${personalInfo.firstName || "resume"}_${personalInfo.lastName || "document"}`,
-        onBeforePrint: async () => { setIsDownloading(true); return Promise.resolve(); },
-        onAfterPrint: () => setIsDownloading(false),
-        onPrintError: (errorLocation, error) => {
-            console.error("Print Error:", error);
+    const downloadPdf = () => {
+        setIsDownloading(true);
+        // Small timeout allows the UI loader to spin before locking the main thread for printing
+        setTimeout(() => {
+            document.title = `${personalInfo.firstName || "resume"}_${personalInfo.lastName || "document"}`;
+            window.print();
             setIsDownloading(false);
-            alert("Download failed. Please try again.");
-        }
-    });
+            // Revert title
+            document.title = "AI Resume Maker";
+        }, 100);
+    };
 
     const renderTemplate = () => {
         switch (template) {
