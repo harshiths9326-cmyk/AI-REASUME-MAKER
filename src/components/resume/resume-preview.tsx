@@ -1,10 +1,9 @@
 "use client"
 
-import { useRef } from "react"
-import { Download } from "lucide-react"
+import { useRef, useState } from "react"
+import { Download, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ResumeData } from "@/lib/types"
-import generatePDF, { Resolution, Margin } from "react-to-pdf"
 
 interface ResumePreviewProps {
     data: ResumeData
@@ -701,17 +700,102 @@ export function ResumePreview({ data, template = "modern" }: ResumePreviewProps)
 
     const { personalInfo } = data
     const targetRef = useRef<HTMLDivElement>(null)
+    const [isDownloading, setIsDownloading] = useState(false)
 
-    const downloadPdf = () => {
-        generatePDF(targetRef, {
-            method: "save",
-            filename: `${personalInfo.firstName || "resume"}_${personalInfo.lastName || "document"}.pdf`,
-            resolution: Resolution.HIGH,
-            page: {
-                margin: Margin.NONE,
+    const downloadPdf = async () => {
+        if (!targetRef.current) return;
+        setIsDownloading(true);
+        try {
+            const html2canvas = (await import("html2canvas")).default;
+            const { jsPDF } = await import("jspdf");
+
+            // Force all CSS custom properties used by Tailwind/shadcn to concrete
+            // hex values so html2canvas (which doesn't support oklch) renders correctly.
+            const el = targetRef.current;
+            const prevBackground = el.style.backgroundColor;
+            el.style.backgroundColor = "#ffffff";
+            el.style.color = "#000000";
+
+            const canvas = await html2canvas(el, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: "#ffffff",
+                logging: false,
+                // Override CSS variables that html2canvas can't parse
+                onclone: (clonedDoc) => {
+                    const style = clonedDoc.createElement("style");
+                    style.textContent = `
+                        * { 
+                            --primary: #1a1a1a !important;
+                            --primary-foreground: #ffffff !important;
+                            --background: #ffffff !important;
+                            --foreground: #1a1a1a !important;
+                            --muted: #f4f4f5 !important;
+                            --muted-foreground: #71717a !important;
+                            --card: #ffffff !important;
+                            --border: #e4e4e7 !important;
+                            --destructive: #ef4444 !important;
+                            --accent: #f4f4f5 !important;
+                            --accent-foreground: #1a1a1a !important;
+                            --secondary: #f4f4f5 !important;
+                            --secondary-foreground: #1a1a1a !important;
+                            color-scheme: light !important;
+                        }
+                        body { background: #ffffff !important; color: #1a1a1a !important; }
+                    `;
+                    clonedDoc.head.appendChild(style);
+                },
+            });
+
+            // Restore original styles
+            el.style.backgroundColor = prevBackground;
+            el.style.color = "";
+
+            const imgData = canvas.toDataURL("image/jpeg", 0.95);
+            const pdf = new jsPDF({
+                orientation: "portrait",
+                unit: "mm",
                 format: "a4",
-            },
-        })
+            });
+
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+            const imgWidth = canvas.width;
+            const imgHeight = canvas.height;
+            const ratio = pdfWidth / (imgWidth / 2);
+            const scaledHeight = (imgHeight / 2) * ratio;
+
+            if (scaledHeight <= pdfHeight) {
+                // Single page
+                pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, scaledHeight);
+            } else {
+                // Multi-page
+                let yOffset = 0;
+                let pageHeightPx = (pdfHeight / ratio) * 2;
+                while (yOffset < imgHeight) {
+                    const pageCanvas = document.createElement("canvas");
+                    pageCanvas.width = imgWidth;
+                    pageCanvas.height = Math.min(pageHeightPx, imgHeight - yOffset);
+                    const ctx = pageCanvas.getContext("2d")!;
+                    ctx.fillStyle = "#ffffff";
+                    ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
+                    ctx.drawImage(canvas, 0, -yOffset);
+                    const pageData = pageCanvas.toDataURL("image/jpeg", 0.95);
+                    const sliceHeight = (pageCanvas.height / 2) * ratio;
+                    pdf.addImage(pageData, "JPEG", 0, 0, pdfWidth, sliceHeight);
+                    yOffset += pageHeightPx;
+                    if (yOffset < imgHeight) pdf.addPage();
+                }
+            }
+
+            const filename = `${personalInfo.firstName || "resume"}_${personalInfo.lastName || "document"}.pdf`;
+            pdf.save(filename);
+        } catch (err) {
+            console.error("PDF download failed:", err);
+            alert("Download failed. Please try again.");
+        } finally {
+            setIsDownloading(false);
+        }
     }
 
     const renderTemplate = () => {
@@ -742,8 +826,13 @@ export function ResumePreview({ data, template = "modern" }: ResumePreviewProps)
     return (
         <div className="flex flex-col h-full bg-zinc-100 dark:bg-zinc-900 border relative">
             <div className="absolute top-4 right-4 z-10 hidden lg:block">
-                <Button onClick={downloadPdf} size="sm" className="shadow-md">
-                    <Download className="h-4 w-4 mr-2" /> Download Document
+                <Button onClick={downloadPdf} size="sm" className="shadow-md" disabled={isDownloading}>
+                    {isDownloading ? (
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    ) : (
+                        <Download className="h-4 w-4 mr-2" />
+                    )}
+                    {isDownloading ? "Generating PDF..." : "Download PDF"}
                 </Button>
             </div>
 
@@ -760,8 +849,13 @@ export function ResumePreview({ data, template = "modern" }: ResumePreviewProps)
             </div>
 
             <div className="lg:hidden p-4 border-t bg-background">
-                <Button onClick={downloadPdf} className="w-full">
-                    <Download className="h-4 w-4 mr-2" /> Download Document
+                <Button onClick={downloadPdf} className="w-full" disabled={isDownloading}>
+                    {isDownloading ? (
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    ) : (
+                        <Download className="h-4 w-4 mr-2" />
+                    )}
+                    {isDownloading ? "Generating PDF..." : "Download PDF"}
                 </Button>
             </div>
         </div>
