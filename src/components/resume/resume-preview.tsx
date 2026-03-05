@@ -54,7 +54,7 @@ const ModernTemplate = ({ data }: { data: ResumeData }) => {
                     </h2>
                     <div className="space-y-4">
                         {experience.map((exp) => (
-                            <div key={exp.id}>
+                            <div key={exp.id} className="break-inside-avoid-page">
                                 <div className="flex justify-between items-baseline mb-1">
                                     <h3 className="font-bold text-base">{exp.position}</h3>
                                     <span className="text-sm font-medium text-muted-foreground">
@@ -64,7 +64,7 @@ const ModernTemplate = ({ data }: { data: ResumeData }) => {
                                 <div className="text-sm font-semibold text-primary/80 mb-2">
                                     {exp.company}
                                 </div>
-                                <div className="text-sm leading-relaxed whitespace-pre-wrap ml-4 list-disc list-outside" style={{ display: "list-item" }}>
+                                <div className="text-sm leading-relaxed whitespace-pre-wrap ml-4 list-disc list-outside break-words" style={{ display: "list-item" }}>
                                     {exp.description}
                                 </div>
                             </div>
@@ -80,7 +80,7 @@ const ModernTemplate = ({ data }: { data: ResumeData }) => {
                     </h2>
                     <div className="space-y-3">
                         {education.map((edu) => (
-                            <div key={edu.id}>
+                            <div key={edu.id} className="break-inside-avoid-page">
                                 <div className="flex justify-between items-baseline mb-1">
                                     <h3 className="font-bold text-base">{edu.school}</h3>
                                     <span className="text-sm font-medium text-muted-foreground">
@@ -108,13 +108,13 @@ const ModernTemplate = ({ data }: { data: ResumeData }) => {
                     </h2>
                     <div className="space-y-3">
                         {projects.map((proj) => (
-                            <div key={proj.id}>
+                            <div key={proj.id} className="break-inside-avoid-page">
                                 <div className="flex justify-between items-baseline mb-1">
                                     <h3 className="font-bold text-base">
                                         {proj.title} {proj.link && <span className="font-normal text-sm text-blue-600 ml-2">({proj.link})</span>}
                                     </h3>
                                 </div>
-                                <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                                <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">
                                     {proj.description}
                                 </p>
                             </div>
@@ -143,7 +143,7 @@ const ModernTemplate = ({ data }: { data: ResumeData }) => {
                     <h2 className="text-lg font-bold uppercase mb-3 text-primary tracking-wider">Certifications</h2>
                     <div className="space-y-2">
                         {certifications.map(c => (
-                            <div key={c.id} className="flex justify-between items-baseline">
+                            <div key={c.id} className="flex justify-between items-baseline break-inside-avoid-page">
                                 <div>
                                     <span className="font-bold text-sm">{c.name}</span>
                                     {c.issuer && <span className="text-sm text-muted-foreground ml-2">— {c.issuer}</span>}
@@ -162,7 +162,7 @@ const ModernTemplate = ({ data }: { data: ResumeData }) => {
                         {achievements.map(a => (
                             <div key={a.id}>
                                 <div className="font-bold text-sm">{a.title}</div>
-                                <div className="text-sm text-muted-foreground whitespace-pre-wrap">{a.description}</div>
+                                <div className="text-sm text-muted-foreground whitespace-pre-wrap break-words">{a.description}</div>
                             </div>
                         ))}
                     </div>
@@ -229,7 +229,7 @@ const CorporateTemplate = ({ data }: { data: ResumeData }) => {
                     <h2 className="text-md font-bold uppercase mb-2 border-b border-gray-400 pb-1 tracking-wider text-center">
                         Professional Summary
                     </h2>
-                    <p className="text-sm leading-relaxed text-black font-sans whitespace-pre-wrap text-justify mt-2">
+                    <p className="text-sm leading-relaxed text-black font-sans whitespace-pre-wrap text-justify mt-2 break-words">
                         {personalInfo.summary}
                     </p>
                 </div>
@@ -242,7 +242,7 @@ const CorporateTemplate = ({ data }: { data: ResumeData }) => {
                     </h2>
                     <div className="space-y-5 mt-3">
                         {experience.map((exp) => (
-                            <div key={exp.id}>
+                            <div key={exp.id} className="break-inside-avoid-page">
                                 <div className="flex justify-between items-baseline mb-1">
                                     <h3 className="font-bold text-base">{exp.company}</h3>
                                     <span className="text-sm font-sans font-medium text-black">
@@ -252,7 +252,7 @@ const CorporateTemplate = ({ data }: { data: ResumeData }) => {
                                 <div className="text-sm font-sans italic text-black mb-2">
                                     {exp.position}
                                 </div>
-                                <div className="text-sm text-black font-sans leading-relaxed whitespace-pre-wrap ml-5 list-disc list-outside" style={{ display: "list-item" }}>
+                                <div className="text-sm text-black font-sans leading-relaxed whitespace-pre-wrap ml-5 list-disc list-outside break-words" style={{ display: "list-item" }}>
                                     {exp.description}
                                 </div>
                             </div>
@@ -268,7 +268,7 @@ const CorporateTemplate = ({ data }: { data: ResumeData }) => {
                     </h2>
                     <div className="space-y-4 mt-3">
                         {education.map((edu) => (
-                            <div key={edu.id}>
+                            <div key={edu.id} className="break-inside-avoid-page">
                                 <div className="flex justify-between items-baseline mb-1">
                                     <h3 className="font-bold text-base">{edu.school}</h3>
                                     <span className="text-sm font-sans font-medium text-black">
@@ -279,7 +279,7 @@ const CorporateTemplate = ({ data }: { data: ResumeData }) => {
                                     {edu.degree}
                                 </div>
                                 {edu.description && (
-                                    <p className="text-sm text-black font-sans whitespace-pre-wrap">
+                                    <p className="text-sm text-black font-sans whitespace-pre-wrap break-words">
                                         {edu.description}
                                     </p>
                                 )}
@@ -296,13 +296,13 @@ const CorporateTemplate = ({ data }: { data: ResumeData }) => {
                     </h2>
                     <div className="space-y-3 mt-3">
                         {projects.map((proj) => (
-                            <div key={proj.id}>
+                            <div key={proj.id} className="break-inside-avoid-page">
                                 <div className="flex justify-between items-baseline mb-1">
                                     <h3 className="font-bold text-base">
                                         {proj.title} {proj.link && <span className="font-normal text-sm font-sans ml-2">({proj.link})</span>}
                                     </h3>
                                 </div>
-                                <p className="text-sm text-black font-sans leading-relaxed whitespace-pre-wrap ml-5 list-disc list-outside" style={{ display: "list-item" }}>
+                                <p className="text-sm text-black font-sans leading-relaxed whitespace-pre-wrap ml-5 list-disc list-outside break-words" style={{ display: "list-item" }}>
                                     {proj.description}
                                 </p>
                             </div>
@@ -343,7 +343,7 @@ const CorporateTemplate = ({ data }: { data: ResumeData }) => {
                         {achievements.map(a => (
                             <div key={a.id} className="text-sm font-sans text-black">
                                 <span className="font-bold">{a.title}</span>
-                                {a.description && <p className="mt-1 whitespace-pre-wrap">{a.description}</p>}
+                                {a.description && <p className="mt-1 whitespace-pre-wrap break-words">{a.description}</p>}
                             </div>
                         ))}
                     </div>
@@ -469,7 +469,7 @@ const CreativeTemplate = ({ data }: { data: ResumeData }) => {
                         </h2>
                         <div className="space-y-6">
                             {experience.map((exp) => (
-                                <div key={exp.id} className="relative pl-4 border-l-2 border-[#38bdf8]/30">
+                                <div key={exp.id} className="relative pl-4 border-l-2 border-[#38bdf8]/30 break-inside-avoid-page">
                                     <div className="absolute w-2 h-2 bg-[#38bdf8] rounded-full -left-[5px] top-1"></div>
                                     <div className="mb-1">
                                         <h3 className="font-bold text-lg leading-tight">{exp.position}</h3>
@@ -478,7 +478,7 @@ const CreativeTemplate = ({ data }: { data: ResumeData }) => {
                                             {exp.startDate} {exp.endDate ? `- ${exp.endDate}` : ""}
                                         </span>
                                     </div>
-                                    <div className="text-sm leading-relaxed whitespace-pre-wrap mt-2 list-disc list-outside space-y-1">
+                                    <div className="text-sm leading-relaxed whitespace-pre-wrap mt-2 list-disc list-outside space-y-1 break-words">
                                         {exp.description}
                                     </div>
                                 </div>
@@ -494,12 +494,12 @@ const CreativeTemplate = ({ data }: { data: ResumeData }) => {
                         </h2>
                         <div className="grid grid-cols-1 gap-4">
                             {projects.map((proj) => (
-                                <div key={proj.id} className="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                                <div key={proj.id} className="bg-gray-50 p-4 rounded-lg border border-gray-100 break-inside-avoid-page">
                                     <h3 className="font-bold text-base mb-1 text-[#1f2937]">
                                         {proj.title}
                                     </h3>
                                     {proj.link && <a href={proj.link} className="text-xs font-bold text-[#38bdf8] block mb-2">{proj.link}</a>}
-                                    <p className="text-sm leading-relaxed mt-1">
+                                    <p className="text-sm leading-relaxed mt-1 break-words whitespace-pre-wrap">
                                         {proj.description}
                                     </p>
                                 </div>
@@ -529,7 +529,7 @@ const CreativeTemplate = ({ data }: { data: ResumeData }) => {
                             {achievements.map(a => (
                                 <div key={a.id} className="relative pl-4 border-l-2 border-[#38bdf8]/30">
                                     <div className="font-bold text-sm">{a.title}</div>
-                                    <div className="text-sm whitespace-pre-wrap">{a.description}</div>
+                                    <div className="text-sm whitespace-pre-wrap break-words">{a.description}</div>
                                 </div>
                             ))}
                         </div>

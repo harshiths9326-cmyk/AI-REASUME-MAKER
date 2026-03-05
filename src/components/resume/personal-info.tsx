@@ -6,14 +6,15 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { PersonalInfo as PersonalInfoType } from "@/lib/types"
+import { PersonalInfo as PersonalInfoType, ResumeData } from "@/lib/types"
 
 interface PersonalInfoProps {
     data: PersonalInfoType
+    fullData?: ResumeData
     updateData: (data: PersonalInfoType) => void
 }
 
-export function PersonalInfo({ data, updateData }: PersonalInfoProps) {
+export function PersonalInfo({ data, fullData, updateData }: PersonalInfoProps) {
     const [isGenerating, setIsGenerating] = useState(false)
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -21,11 +22,27 @@ export function PersonalInfo({ data, updateData }: PersonalInfoProps) {
     }
 
     const generateSummary = async () => {
+        let contextAddition = "";
+
+        if (fullData) {
+            if (fullData.experience && fullData.experience.length > 0) {
+                contextAddition += "\nWork Experience:\n" + fullData.experience.map(exp =>
+                    `- ${exp.position} at ${exp.company} (${exp.startDate} to ${exp.endDate}): ${exp.description}`
+                ).join("\n");
+            }
+            if (fullData.education && fullData.education.length > 0) {
+                contextAddition += "\n\nEducation:\n" + fullData.education.map(edu =>
+                    `- ${edu.degree} from ${edu.school}`
+                ).join("\n");
+            }
+        }
+
         const promptContext = `
             Name: ${data.firstName} ${data.lastName}
             Current Role/Target: ${data.summary || "Professional"}
             Background: ${data.summary}
-        `
+            ${contextAddition}
+        `.trim();
 
         try {
             setIsGenerating(true)

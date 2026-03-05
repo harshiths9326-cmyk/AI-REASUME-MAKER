@@ -86,6 +86,7 @@ export function ResumeForm({ data, updateData }: ResumeFormProps) {
             <div className="flex-1 overflow-y-auto p-4 space-y-8 custom-scrollbar pb-24">
                 <PersonalInfo
                     data={data.personalInfo}
+                    fullData={data}
                     updateData={(info: any) => updateData({ personalInfo: info })}
                 />
                 <hr className="my-8" />
