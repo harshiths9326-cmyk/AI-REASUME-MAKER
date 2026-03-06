@@ -717,13 +717,26 @@ export function ResumePreview({ data, template = "modern", updateData }: ResumeP
                 })
             })
 
-            const result = await response.json()
-            if (response.ok && result.text) {
-                const optimizedData = JSON.parse(result.text)
-                updateData(optimizedData)
+            let result;
+            try {
+                result = await response.json();
+            } catch (e) {
+                throw new Error("Invalid server response. Please ensure your AI API key is configured correctly.");
             }
-        } catch (error) {
-            console.error("Optimization failed:", error)
+
+            if (response.ok && result.text) {
+                try {
+                    const optimizedData = JSON.parse(result.text);
+                    updateData(optimizedData);
+                } catch (e) {
+                    throw new Error("AI generated an invalid data structure. Please try again.");
+                }
+            } else {
+                throw new Error(result.error || "AI optimization protocol failed. Please verify your connection.");
+            }
+        } catch (error: any) {
+            console.error("Optimization failed:", error);
+            alert(error.message || "Failed to optimize resume content.");
         } finally {
             setIsOptimizing(false)
         }

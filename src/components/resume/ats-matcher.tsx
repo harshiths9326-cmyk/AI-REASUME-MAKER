@@ -59,11 +59,17 @@ export function ATSMatcher({ resumeData, updateData }: ATSMatcherProps) {
                 }),
             })
 
-            const data = await response.json()
+            let data;
+            try {
+                data = await response.json();
+            } catch (e) {
+                throw new Error("Invalid server response. Please ensure your AI API key is configured correctly.");
+            }
+
             if (response.ok) {
-                setResult(data)
+                setResult(data);
             } else {
-                throw new Error(data.error || "Analysis failed")
+                throw new Error(data.error || "AI generation protocol failed. Please verify your connection or try again later.");
             }
         } catch (error) {
             console.error("Match error:", error)
