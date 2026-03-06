@@ -19,12 +19,14 @@ export default function BulletGenerator() {
     const [isGenerating, setIsGenerating] = useState(false)
     const [result, setResult] = useState<string[]>([])
     const [copiedIndex, setCopiedIndex] = useState<number | null>(null)
+    const [errorMsg, setErrorMsg] = useState<string>("")
 
     const generateBullets = async () => {
         if (!formData.jobTitle || !formData.responsibilities) return
 
         try {
             setIsGenerating(true)
+            setErrorMsg("")
             const prompt = `
             Job Title: ${formData.jobTitle}
             Company: ${formData.company}
@@ -42,18 +44,32 @@ export default function BulletGenerator() {
                 })
             })
 
-            const data = await response.json()
+            let data: any
+            try {
+                data = await response.json()
+            } catch (e) {
+                throw new Error("Server returned an invalid response. Please try again.")
+            }
+
             if (response.ok && data.text) {
                 // Split by newline and clean up bullet points
                 const bullets = data.text
                     .split("\n")
                     .filter((line: string) => line.trim().length > 0)
                     .map((line: string) => line.replace(/^[•\-\*\d\.]\s*/, "").trim())
+                    .filter((line: string) => line.length > 5)
                     .slice(0, 4)
+
+                if (bullets.length === 0) {
+                    throw new Error("AI returned no usable bullet points. Please try again with more details.")
+                }
                 setResult(bullets)
+            } else {
+                throw new Error(data?.error || "Failed to generate bullet points. Please check your API key.")
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error("Failed to generate bullets:", error)
+            setErrorMsg(error?.message || "An unexpected error occurred. Please try again.")
         } finally {
             setIsGenerating(false)
         }
@@ -148,6 +164,14 @@ export default function BulletGenerator() {
                                         />
                                     </div>
                                 </div>
+
+                                {/* Error message */}
+                                {errorMsg && (
+                                    <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-400 font-mono">
+                                        <p className="font-bold mb-1">⚠ Error</p>
+                                        <p>{errorMsg}</p>
+                                    </div>
+                                )}
 
                                 <Button
                                     onClick={generateBullets}
