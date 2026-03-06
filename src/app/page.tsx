@@ -111,25 +111,25 @@ export default function Home() {
           >
             {[
               {
-                icon: Bot,
-                title: "Neural Network Content",
-                desc: "Generate highly optimized professional bullet points based on minimal raw input data.",
-                href: "/tools/bullet-generator",
-                cta: "Execute AI",
-              },
-              {
-                icon: FileText,
-                title: "ATS-Bypass Protocols",
-                desc: "Clean, structured data templates architected to pass Applicant Tracking Systems flawlessly.",
-                href: "/tools/ats-scanner",
-                cta: "Access Schematics",
-              },
-              {
                 icon: Download,
                 title: "Instant Compilation",
                 desc: "Compile and download your final resume matrix instantly as a perfectly formatted PDF.",
                 href: "/builder",
                 cta: "Initiate Export",
+              },
+              {
+                icon: FileText,
+                title: "Multiple Templates",
+                desc: "Choose from a curated collection of professionally designed resume templates for every career level.",
+                href: "/templates",
+                cta: "Browse Templates",
+              },
+              {
+                icon: Bot,
+                title: "Smart Form Editor",
+                desc: "Fill in your details with an intuitive structured editor and see your resume come alive in real-time.",
+                href: "/builder",
+                cta: "Open Builder",
               },
             ].map((feature, idx) => {
               const isLocked = !isLoggedIn;

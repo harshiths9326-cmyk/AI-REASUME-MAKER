@@ -896,22 +896,6 @@ export function ResumePreview({ data, template = "modern", updateData }: ResumeP
     return (
         <div className="flex flex-col h-full bg-zinc-100 dark:bg-zinc-900 border relative">
             <div className="absolute top-4 right-4 z-10 hidden lg:flex gap-2">
-                {updateData && (
-                    <Button
-                        variant="secondary"
-                        size="sm"
-                        className="shadow-md bg-purple-600 hover:bg-purple-700 text-white border-none"
-                        onClick={handleOptimize}
-                        disabled={isOptimizing}
-                    >
-                        {isOptimizing ? (
-                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        ) : (
-                            <Wand2 className="h-4 w-4 mr-2" />
-                        )}
-                        {isOptimizing ? "Optimizing..." : "AI Optimize"}
-                    </Button>
-                )}
                 <Button onClick={downloadPdf} size="sm" className="shadow-md" disabled={isDownloading}>
                     {isDownloading ? (
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -935,21 +919,6 @@ export function ResumePreview({ data, template = "modern", updateData }: ResumeP
             </div>
 
             <div className="lg:hidden p-4 border-t bg-background flex flex-col gap-2">
-                {updateData && (
-                    <Button
-                        variant="secondary"
-                        className="w-full bg-purple-600 hover:bg-purple-700 text-white border-none"
-                        onClick={handleOptimize}
-                        disabled={isOptimizing}
-                    >
-                        {isOptimizing ? (
-                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        ) : (
-                            <Wand2 className="h-4 w-4 mr-2" />
-                        )}
-                        {isOptimizing ? "Optimizing..." : "AI Optimize Content"}
-                    </Button>
-                )}
                 <Button onClick={downloadPdf} className="w-full" disabled={isDownloading}>
                     {isDownloading ? (
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
