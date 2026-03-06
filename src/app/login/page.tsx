@@ -25,14 +25,6 @@ export default function LoginPage() {
         if (user) {
             router.replace("/templates");
         }
-
-        // Force clear fields after a delay to thwart aggressive browser pre-fill
-        const timer = setTimeout(() => {
-            setEmail("");
-            setPassword("");
-        }, 500);
-
-        return () => clearTimeout(timer);
     }, [router]);
 
     const handleLogin = async (e: React.FormEvent) => {
@@ -140,7 +132,8 @@ export default function LoginPage() {
                             <div className="relative">
                                 <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                                 <Input
-                                    id="email"
+                                    id="login-email"
+                                    name="login-email"
                                     type="email"
                                     className={cn("pl-9", fieldErrors.email && "border-destructive focus-visible:ring-destructive")}
                                     value={email}
@@ -148,7 +141,7 @@ export default function LoginPage() {
                                         setEmail(e.target.value);
                                         if (fieldErrors.email) setFieldErrors(prev => ({ ...prev, email: undefined }));
                                     }}
-                                    autoComplete="one-time-code"
+                                    autoComplete="email"
                                 />
                                 {fieldErrors.email && (
                                     <p className="text-[10px] font-mono font-bold text-destructive mt-1 uppercase tracking-tighter">
@@ -169,7 +162,8 @@ export default function LoginPage() {
                             <div className="relative">
                                 <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                                 <Input
-                                    id="password"
+                                    id="login-password"
+                                    name="login-password"
                                     type="password"
                                     className={cn("pl-9", fieldErrors.password && "border-destructive focus-visible:ring-destructive")}
                                     value={password}
@@ -177,7 +171,7 @@ export default function LoginPage() {
                                         setPassword(e.target.value);
                                         if (fieldErrors.password) setFieldErrors(prev => ({ ...prev, password: undefined }));
                                     }}
-                                    autoComplete="new-password"
+                                    autoComplete="current-password"
                                 />
                                 {fieldErrors.password && (
                                     <p className="text-[10px] font-mono font-bold text-destructive mt-1 uppercase tracking-tighter">
