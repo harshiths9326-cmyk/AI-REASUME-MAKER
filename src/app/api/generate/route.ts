@@ -33,7 +33,7 @@ export async function POST(req: Request) {
         if (type === "experience") {
             systemMessage += " Enhance the provided work experience into 3-4 professional, impactful, and action-oriented bullet points suitable for a resume. Focus on achievements and metrics where applicable."
         } else if (type === "summary") {
-            systemMessage += " Write a professional, concise summary for a resume based on the provided details (limit to 3-4 sentences). Focus on key strengths and career trajectory."
+            systemMessage += " Write a compelling, results-oriented professional summary (3-4 sentences). Highlight key accomplishments, unique value propositions, and career achievements based on the context. Use action verbs and maintain a professional tone."
         } else {
             systemMessage += " Please rewrite the provided content to be professional and suitable for a resume."
         }
