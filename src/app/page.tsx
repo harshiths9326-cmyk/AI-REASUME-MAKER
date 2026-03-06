@@ -215,26 +215,31 @@ export default function Home() {
             <div className="hidden md:block absolute top-12 left-[10%] w-[80%] h-[2px] bg-primary/20 -z-10 shadow-[0_0_10px_var(--primary)]" />
 
             {[
-              { step: "01", title: "Input Data", desc: "Feed raw career endpoints into the system." },
-              { step: "02", title: "AI Processing", desc: "Neural networks optimize and expand bullet points." },
-              { step: "03", title: "Manual Override", desc: "Review and calibrate the generated matrix." },
-              { step: "04", title: "Compile PDF", desc: "Export final ATS-compliant artifact." }
-            ].map((item, i) => (
-              <motion.div key={i} variants={fadeIn} className="flex flex-col items-center text-center space-y-6 group">
-                <div className="w-24 h-24 bg-background/80 backdrop-blur border border-primary/50 flex items-center justify-center text-3xl font-black text-primary shadow-[0_0_15px_rgba(0,243,255,0.2)] group-hover:shadow-[0_0_25px_rgba(0,243,255,0.6)] group-hover:border-primary transition-all duration-500 relative">
-                  {/* Digital corner accents */}
-                  <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-primary"></div>
-                  <div className="absolute top-0 right-0 w-2 h-2 border-t-2 border-r-2 border-primary"></div>
-                  <div className="absolute bottom-0 left-0 w-2 h-2 border-b-2 border-l-2 border-primary"></div>
-                  <div className="absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 border-primary"></div>
-                  {item.step}
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold uppercase tracking-wider mb-2">{item.title}</h3>
-                  <p className="text-muted-foreground font-mono text-sm">{item.desc}</p>
-                </div>
-              </motion.div>
-            ))}
+              { step: "01", title: "Input Data", desc: "Feed raw career endpoints into the system.", href: "/builder" },
+              { step: "02", title: "AI Processing", desc: "Neural networks optimize and expand bullet points.", href: "/tools/bullet-generator" },
+              { step: "03", title: "Manual Override", desc: "Review and calibrate the generated matrix.", href: "/builder" },
+              { step: "04", title: "Compile PDF", desc: "Export final ATS-compliant artifact.", href: "/builder" }
+            ].map((item, i) => {
+              const cardHref = !isLoggedIn ? "/login" : item.href;
+              return (
+                <motion.div key={i} variants={fadeIn}>
+                  <Link href={cardHref} className="flex flex-col items-center text-center space-y-6 group cursor-pointer transition-transform hover:scale-105">
+                    <div className="w-24 h-24 bg-background/80 backdrop-blur border border-primary/50 flex items-center justify-center text-3xl font-black text-primary shadow-[0_0_15px_rgba(0,243,255,0.2)] group-hover:shadow-[0_0_25px_rgba(0,243,255,0.6)] group-hover:border-primary transition-all duration-500 relative">
+                      {/* Digital corner accents */}
+                      <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-primary"></div>
+                      <div className="absolute top-0 right-0 w-2 h-2 border-t-2 border-r-2 border-primary"></div>
+                      <div className="absolute bottom-0 left-0 w-2 h-2 border-b-2 border-l-2 border-primary"></div>
+                      <div className="absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 border-primary"></div>
+                      {item.step}
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold uppercase tracking-wider mb-2 group-hover:text-primary transition-colors">{item.title}</h3>
+                      <p className="text-muted-foreground font-mono text-sm">{item.desc}</p>
+                    </div>
+                  </Link>
+                </motion.div>
+              );
+            })}
           </motion.div>
         </div>
       </section>
