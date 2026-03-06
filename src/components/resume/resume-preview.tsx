@@ -735,7 +735,23 @@ export function ResumePreview({ data, template = "modern" }: ResumePreviewProps)
                 backgroundColor: "#ffffff",
                 logging: false,
                 windowWidth: element.scrollWidth,
-                windowHeight: element.scrollHeight
+                windowHeight: element.scrollHeight,
+                onclone: (clonedDoc) => {
+                    // Sanitize all colors in the cloned document to avoid "lab" or "oklch" errors
+                    // Browsers return rgb() or rgba() for getComputedStyle, which html2canvas supports.
+                    const elements = clonedDoc.querySelectorAll("*");
+                    elements.forEach((el) => {
+                        if (el instanceof HTMLElement) {
+                            const style = window.getComputedStyle(el);
+                            // Explicitly re-set color, background-color, and border-color to their computed RGB values
+                            el.style.color = style.color;
+                            el.style.backgroundColor = style.backgroundColor;
+                            el.style.borderColor = style.borderColor;
+                            el.style.fill = style.fill;
+                            el.style.stroke = style.stroke;
+                        }
+                    });
+                }
             });
 
             // Restore styles
