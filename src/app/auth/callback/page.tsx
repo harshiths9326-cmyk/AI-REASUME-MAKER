@@ -22,8 +22,13 @@ export default function AuthCallbackPage() {
                 // Sync to sessionStorage for the app's existing auth logic
                 sessionStorage.setItem("ai_resume_user", session.user.email || "")
                 const fullName = session.user.user_metadata?.full_name || session.user.user_metadata?.name
+                const avatarUrl = session.user.user_metadata?.avatar_url
+
                 if (fullName) {
                     sessionStorage.setItem("ai_resume_name", fullName)
+                }
+                if (avatarUrl) {
+                    sessionStorage.setItem("ai_resume_avatar", avatarUrl)
                 }
 
                 // Mark as returning user
