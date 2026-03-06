@@ -13,6 +13,7 @@ export function Header() {
     const pathname = usePathname()
     const [userEmail, setUserEmail] = useState<string | null>(null)
     const [userName, setUserName] = useState<string | null>(null)
+    const [userAvatar, setUserAvatar] = useState<string | null>(null)
     const [mounted, setMounted] = useState(false)
 
     // Re-sync session whenever the route changes (handles post-login redirect)
@@ -22,6 +23,7 @@ export function Header() {
             // Priority 1: Check sessionStorage (the app's logic)
             let email = sessionStorage.getItem("ai_resume_user")
             let name = sessionStorage.getItem("ai_resume_name")
+            let avatar = sessionStorage.getItem("ai_resume_avatar")
 
             // Priority 2: Check Supabase session (for fresh OAuth logins or refreshes)
             if (!email) {
@@ -29,9 +31,11 @@ export function Header() {
                 if (session?.user) {
                     email = session.user.email || null
                     name = session.user.user_metadata?.full_name || session.user.user_metadata?.name || null
+                    avatar = session.user.user_metadata?.avatar_url || null
 
                     if (email) sessionStorage.setItem("ai_resume_user", email)
                     if (name) sessionStorage.setItem("ai_resume_name", name)
+                    if (avatar) sessionStorage.setItem("ai_resume_avatar", avatar)
                     // Mark as returning since they have a session
                     localStorage.setItem("ai_resume_returning_user", "true")
                 }
@@ -39,6 +43,7 @@ export function Header() {
 
             setUserEmail(email)
             setUserName(name)
+            setUserAvatar(avatar)
         }
 
         syncSession()
@@ -48,8 +53,10 @@ export function Header() {
     const handleSignOut = () => {
         sessionStorage.removeItem("ai_resume_user")
         sessionStorage.removeItem("ai_resume_name")
+        sessionStorage.removeItem("ai_resume_avatar")
         setUserEmail(null)
         setUserName(null)
+        setUserAvatar(null)
         router.push("/")
     }
 
@@ -81,9 +88,19 @@ export function Header() {
                                 <>
                                     {/* Logged-in user badge */}
                                     <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-sm">
-                                        <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold">
-                                            {avatar}
-                                        </div>
+                                        {userAvatar ? (
+                                            <div className="w-6 h-6 rounded-full overflow-hidden border border-primary/30">
+                                                <img
+                                                    src={userAvatar}
+                                                    alt={userName || "User"}
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            </div>
+                                        ) : (
+                                            <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold">
+                                                {avatar}
+                                            </div>
+                                        )}
                                         <span className="text-primary font-medium hidden sm:block max-w-[140px] truncate">
                                             {userName || userEmail}
                                         </span>
