@@ -28,6 +28,48 @@ const templates = [
         description: "Stand out with bold typography and a unique two-column structure.",
         image: "/templates/creative.png",
         popular: false,
+    },
+    {
+        id: "minimalist-grey",
+        name: "Black White Minimalist",
+        description: "Simple, elegant Black and White Minimalist CV Resume.",
+        image: "/templates/minimalist.png",
+        popular: false,
+    },
+    {
+        id: "white-modern-business",
+        name: "Business Graduate",
+        description: "Black and White Simple Business School Graduate Corporate Resume.",
+        image: "/templates/business.png",
+        popular: false,
+    },
+    {
+        id: "gray-clean",
+        name: "Science & Engineering",
+        description: "Science and Engineering Resume in White Black Simple Style.",
+        image: "/templates/science.png",
+        popular: false,
+    },
+    {
+        id: "blue-cv",
+        name: "Simple Professional",
+        description: "Standard Simple Professional CV Resume layout.",
+        image: "/templates/professional.png",
+        popular: false,
+    },
+    {
+        id: "gray-marketing",
+        name: "Gray & White Clean",
+        description: "Modern Gray and White Simple Clean Resume design.",
+        image: "/templates/gray.png",
+        popular: false,
+    },
+    {
+        id: "beige-minimal",
+        name: "Business Real Estate",
+        description: "White Clean Minimalist Business Real Estate Resume style.",
+        image: "/templates/beige.png",
+        popular: false,
     }
 ];
 

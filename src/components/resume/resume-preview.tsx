@@ -737,18 +737,45 @@ export function ResumePreview({ data, template = "modern" }: ResumePreviewProps)
                 windowWidth: element.scrollWidth,
                 windowHeight: element.scrollHeight,
                 onclone: (clonedDoc) => {
-                    // Sanitize all colors in the cloned document to avoid "lab" or "oklch" errors
-                    // Browsers return rgb() or rgba() for getComputedStyle, which html2canvas supports.
+                    // 1. Aggressive Stylesheet Sanitization
+                    // Iterate through all style tags and replace unsupported color functions via regex
+                    const styleTags = clonedDoc.querySelectorAll("style");
+                    styleTags.forEach((styleTag) => {
+                        if (styleTag.textContent) {
+                            // Regex to find lab(), oklch(), color-mix() and replace with rgb(0,0,0)
+                            // This catch-all helps when html2canvas parses the stylesheets
+                            const unsupportedColorRegex = /(lab|oklch|lch|color-mix|hwb)\([^)]+\)/g;
+                            styleTag.textContent = styleTag.textContent.replace(unsupportedColorRegex, "rgb(0, 0, 0)");
+                        }
+                    });
+
+                    // 2. Comprehensive Element Property Sanitization
                     const elements = clonedDoc.querySelectorAll("*");
                     elements.forEach((el) => {
-                        if (el instanceof HTMLElement) {
+                        if (el instanceof HTMLElement || el instanceof SVGElement) {
                             const style = window.getComputedStyle(el);
-                            // Explicitly re-set color, background-color, and border-color to their computed RGB values
-                            el.style.color = style.color;
-                            el.style.backgroundColor = style.backgroundColor;
-                            el.style.borderColor = style.borderColor;
-                            el.style.fill = style.fill;
-                            el.style.stroke = style.stroke;
+
+                            // Regex for detecting unsupported colors within property values
+                            const unsupportedColorRegex = /(lab|oklch|lch|color-mix|hwb)\([^)]+\)/g;
+
+                            // List of properties prone to containing colors
+                            const colorProperties = [
+                                "color", "backgroundColor", "borderColor", "borderTopColor",
+                                "borderRightColor", "borderBottomColor", "borderLeftColor",
+                                "fill", "stroke", "boxShadow", "textShadow", "outlineColor",
+                                "stopColor", "floodColor", "lightingColor"
+                            ];
+
+                            colorProperties.forEach((prop) => {
+                                // @ts-ignore - style[prop] is valid but TS is restrictive here
+                                const val = style[prop];
+                                if (val && typeof val === "string" && unsupportedColorRegex.test(val)) {
+                                    const sanitizedVal = val.replace(unsupportedColorRegex, "rgb(0, 0, 0)");
+                                    // Use setProperty with !important to ensure override
+                                    const cssProp = prop.replace(/([A-Z])/g, "-$1").toLowerCase();
+                                    el.style.setProperty(cssProp, sanitizedVal, "important");
+                                }
+                            });
                         }
                     });
                 }
