@@ -1,6 +1,7 @@
 "use client"
 
-import { Plus, Trash2 } from "lucide-react"
+import { useState } from "react"
+import { Plus, Trash2, Bot, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -13,6 +14,8 @@ interface ProjectsProps {
 }
 
 export function Projects({ data, updateData }: ProjectsProps) {
+    const [generatingId, setGeneratingId] = useState<string | null>(null)
+
     const addProject = () => {
         updateData([
             ...data,
@@ -33,6 +36,37 @@ export function Projects({ data, updateData }: ProjectsProps) {
 
     const removeProject = (id: string) => {
         updateData(data.filter((item) => item.id !== id))
+    }
+
+    const generateWithAI = async (id: string, currentDescription: string) => {
+        if (!currentDescription.trim()) return
+
+        try {
+            setGeneratingId(id)
+            const response = await fetch("/api/generate", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    prompt: currentDescription,
+                    type: "project",
+                }),
+            })
+
+            const result = await response.json()
+
+            if (response.ok && result.text) {
+                updateProject(id, "description", result.text)
+            } else {
+                throw new Error(result.error || "Failed to generate text")
+            }
+        } catch (error) {
+            console.error("Error generating text:", error)
+            alert("Failed to generate text using AI. Please check your connection or API key.")
+        } finally {
+            setGeneratingId(null)
+        }
     }
 
     return (
@@ -98,9 +132,26 @@ export function Projects({ data, updateData }: ProjectsProps) {
                                 />
                             </div>
                             <div className="space-y-2 md:col-span-2">
-                                <Label>Description</Label>
+                                <div className="flex items-center justify-between">
+                                    <Label>Description</Label>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="h-8 text-primary hover:text-primary/80 hover:bg-primary/10"
+                                        onClick={() => generateWithAI(project.id, project.description)}
+                                        disabled={!project.description.trim() || generatingId === project.id}
+                                        type="button"
+                                    >
+                                        {generatingId === project.id ? (
+                                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                        ) : (
+                                            <Bot className="h-4 w-4 mr-2" />
+                                        )}
+                                        Enhance with AI
+                                    </Button>
+                                </div>
                                 <Textarea
-                                    placeholder="Built a full-stack application using..."
+                                    placeholder="Built a full-stack application using... Enter brief notes and use 'Enhance with AI' to expand."
                                     className="min-h-[100px]"
                                     value={project.description}
                                     onChange={(e) => updateProject(project.id, "description", e.target.value)}
