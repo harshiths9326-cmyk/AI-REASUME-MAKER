@@ -54,8 +54,8 @@ export default function ResetPasswordPage() {
             <Card className="w-full max-w-md shadow-xl border-t-4 border-t-primary">
                 <CardHeader className="space-y-2 text-center pb-6">
                     <CardTitle className="text-3xl font-bold tracking-tight">Set New Password</CardTitle>
-                    <CardDescription className="text-base">
-                        Choose a strong password for your account.
+                    <CardDescription className="text-base text-muted-foreground/80">
+                        Set your new password (minimum 6 characters). Any password works!
                     </CardDescription>
                 </CardHeader>
                 <CardContent>

@@ -131,8 +131,8 @@ export default function SignupPage() {
             <Card className="w-full max-w-md shadow-xl border-t-4 border-t-secondary">
                 <CardHeader className="space-y-2 text-center pb-6">
                     <CardTitle className="text-3xl font-bold tracking-tight">Create an Account</CardTitle>
-                    <CardDescription className="text-base">
-                        Get started building your AI-powered resume today.
+                    <CardDescription className="text-base text-muted-foreground/80">
+                        Create your account in seconds. Any password with at least 6 characters works!
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -194,7 +194,7 @@ export default function SignupPage() {
                             <label className="text-sm font-medium leading-none flex items-center justify-between" htmlFor="password">
                                 Password
                                 <span className="text-[10px] text-muted-foreground font-normal italic">
-                                    (Min. 6 characters)
+                                    (Minimum 6 characters)
                                 </span>
                             </label>
                             <div className="relative">
