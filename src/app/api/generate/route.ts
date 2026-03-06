@@ -1,6 +1,20 @@
 import { NextResponse } from "next/server"
 import { OpenAI } from "openai"
 
+// Model fallback chain — ordered by preference.
+// If a model is rate-limited or unavailable, the next one is tried automatically.
+const COMPLEX_MODELS = [
+    "google/gemini-2.0-flash-exp:free",        // Fast, high quality, good rate limits
+    "google/gemini-2.0-pro-exp-02-05:free",    // More powerful, stricter limits
+    "meta-llama/llama-3.1-8b-instruct:free",   // Reliable fallback
+    "meta-llama/llama-3-8b-instruct",          // Final fallback
+]
+
+const SIMPLE_MODELS = [
+    "meta-llama/llama-3.1-8b-instruct:free",
+    "meta-llama/llama-3-8b-instruct",
+]
+
 export async function POST(req: Request) {
     try {
         if (!process.env.OPENROUTER_API_KEY) {
@@ -14,8 +28,8 @@ export async function POST(req: Request) {
             baseURL: "https://openrouter.ai/api/v1",
             apiKey: process.env.OPENROUTER_API_KEY,
             defaultHeaders: {
-                "HTTP-Referer": "http://localhost:3000", // Required by OpenRouter for ranking
-                "X-Title": "AI Resume Builder", // Optional title
+                "HTTP-Referer": process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
+                "X-Title": "AI Resume Builder",
             }
         })
 
@@ -51,37 +65,52 @@ export async function POST(req: Request) {
         }
 
         const isComplexTask = ["resume-optimizer", "resume-review", "cover-letter", "interview-prep"].includes(type)
-        const model = isComplexTask
-            ? "google/gemini-2.0-pro-exp-02-05:free"
-            : "meta-llama/llama-3-8b-instruct"
+        const modelChain = isComplexTask ? COMPLEX_MODELS : SIMPLE_MODELS
+        const maxTokens = isComplexTask ? 2000 : 800
 
-        const response = await openai.chat.completions.create({
-            model: model,
-            messages: [
-                {
-                    role: "system",
-                    content: systemMessage,
-                },
-                {
-                    role: "user",
-                    content: prompt,
-                },
-            ],
-            response_format: type === "resume-optimizer" ? { type: "json_object" } : undefined,
-            temperature: 0.3,
-            max_tokens: isComplexTask ? 2000 : 800,
-        })
+        let lastError: any = null
 
-        const generatedText = response.choices[0]?.message?.content?.trim() || ""
+        // Try each model in the chain until one succeeds
+        for (const model of modelChain) {
+            try {
+                console.log(`[generate] Trying model: ${model} for type: ${type}`)
+                const response = await openai.chat.completions.create({
+                    model,
+                    messages: [
+                        { role: "system", content: systemMessage },
+                        { role: "user", content: prompt },
+                    ],
+                    response_format: type === "resume-optimizer" ? { type: "json_object" } : undefined,
+                    temperature: 0.3,
+                    max_tokens: maxTokens,
+                })
 
-        return NextResponse.json({ text: generatedText })
-    } catch (error: any) {
-        // Detailed error logging for debugging
-        console.error("OpenAI/OpenRouter Error:", error)
-        if (error.response) {
-            console.error("Response data:", error.response.data)
+                const generatedText = response.choices[0]?.message?.content?.trim() || ""
+
+                if (!generatedText) {
+                    console.warn(`[generate] Model ${model} returned empty content, trying next...`)
+                    continue
+                }
+
+                console.log(`[generate] Success with model: ${model}`)
+                return NextResponse.json({ text: generatedText, model })
+
+            } catch (modelError: any) {
+                console.warn(`[generate] Model ${model} failed: ${modelError?.message}`)
+                lastError = modelError
+                // Continue to next model in chain
+            }
         }
 
+        // All models failed
+        console.error("[generate] All models failed. Last error:", lastError)
+        return NextResponse.json(
+            { error: lastError?.message || "All AI models are currently unavailable. Please try again in a moment." },
+            { status: 503 }
+        )
+
+    } catch (error: any) {
+        console.error("OpenAI/OpenRouter Error:", error)
         return NextResponse.json(
             { error: error?.message || "Failed to generate content. Please try again." },
             { status: 500 }
