@@ -146,9 +146,9 @@ export default function TemplatesPage() {
                                 <div className="absolute inset-0 bg-background/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center p-6">
                                     <div className="text-center space-y-4">
                                         <h3 className="text-2xl font-bold tracking-tight">{template.name}</h3>
-                                        <Link href={`/builder?template=${template.id}`}>
-                                            <Button size="lg" className="w-full mt-4 rounded-full shadow-lg">
-                                                Use Template <ArrowRight className="ml-2 h-4 w-4" />
+                                        <Link href={`/builder?template=${template.id}`} passHref>
+                                            <Button asChild size="lg" className="w-full mt-4 rounded-full shadow-lg">
+                                                <span>Use Template <ArrowRight className="ml-2 h-4 w-4" /></span>
                                             </Button>
                                         </Link>
                                     </div>
@@ -170,9 +170,9 @@ export default function TemplatesPage() {
                                 </ul>
                             </CardContent>
                             <CardFooter className="pt-4 border-t bg-muted/20">
-                                <Link href={`/builder?template=${template.id}`} className="w-full">
-                                    <Button variant="outline" className="w-full font-bold">
-                                        Select & Continue
+                                <Link href={`/builder?template=${template.id}`} className="w-full" passHref>
+                                    <Button asChild variant="outline" className="w-full font-bold">
+                                        <span>Select & Continue</span>
                                     </Button>
                                 </Link>
                             </CardFooter>

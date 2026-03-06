@@ -9,6 +9,7 @@ import { ResumeData } from "@/lib/types"
 
 interface ATSMatcherProps {
     resumeData: ResumeData
+    updateData?: (newData: Partial<ResumeData>) => void
 }
 
 interface AnalysisResult {
@@ -18,10 +19,29 @@ interface AnalysisResult {
     suggestions: string[]
 }
 
-export function ATSMatcher({ resumeData }: ATSMatcherProps) {
+export function ATSMatcher({ resumeData, updateData }: ATSMatcherProps) {
     const [jd, setJd] = useState("")
     const [isAnalyzing, setIsAnalyzing] = useState(false)
     const [result, setResult] = useState<AnalysisResult | null>(null)
+
+    const addMissingKeyword = (kw: string) => {
+        if (!updateData || !result) return;
+
+        // 1. Add to global resume state
+        const newSkill = { id: crypto.randomUUID(), name: kw };
+        updateData({
+            skills: [...resumeData.skills, newSkill]
+        });
+
+        // 2. Update local ATS result to reflect the change instantly
+        setResult({
+            ...result,
+            missingKeywords: result.missingKeywords.filter(k => k !== kw),
+            matchedKeywords: [...result.matchedKeywords, kw],
+            // Boost score slightly for gamification
+            score: Math.min(100, result.score + 2)
+        });
+    }
 
     const analyzeMatch = async () => {
         if (!jd.trim()) return
@@ -93,14 +113,35 @@ export function ATSMatcher({ resumeData }: ATSMatcherProps) {
                     <div className="flex items-center justify-between">
                         <div className="space-y-1">
                             <span className="text-sm font-medium text-muted-foreground">ATS Score</span>
-                            <div className="text-4xl font-black text-primary italic">
-                                {result.score}%
-                            </div>
                         </div>
-                        <div className={`h-16 w-16 rounded-full border-4 flex items-center justify-center ${result.score >= 80 ? "border-green-500 text-green-500" :
-                                result.score >= 50 ? "border-yellow-500 text-yellow-500" : "border-red-500 text-red-500"
-                            }`}>
-                            {result.score >= 80 ? <CheckCircle2 className="h-8 w-8" /> : <AlertCircle className="h-8 w-8" />}
+                        {/* Gamified Circular Progress */}
+                        <div className="relative h-24 w-24 flex items-center justify-center">
+                            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                                <circle
+                                    className="text-muted stroke-current"
+                                    strokeWidth="8"
+                                    cx="50"
+                                    cy="50"
+                                    r="40"
+                                    fill="transparent"
+                                />
+                                <circle
+                                    className={`${result.score >= 80 ? "text-green-500" : result.score >= 50 ? "text-yellow-500" : "text-red-500"} stroke-current transition-all duration-1000 ease-out`}
+                                    strokeWidth="8"
+                                    strokeLinecap="round"
+                                    cx="50"
+                                    cy="50"
+                                    r="40"
+                                    fill="transparent"
+                                    strokeDasharray={`${2 * Math.PI * 40}`}
+                                    strokeDashoffset={`${2 * Math.PI * 40 * (1 - result.score / 100)}`}
+                                />
+                            </svg>
+                            <div className="absolute inset-0 flex flex-col items-center justify-center">
+                                <span className={`text-xl font-black italic ${result.score >= 80 ? "text-green-500" : result.score >= 50 ? "text-yellow-500" : "text-red-500"}`}>
+                                    {result.score}%
+                                </span>
+                            </div>
                         </div>
                     </div>
 
@@ -122,12 +163,17 @@ export function ATSMatcher({ resumeData }: ATSMatcherProps) {
                         <div>
                             <h4 className="text-sm font-bold mb-2 flex items-center gap-2">
                                 <div className="h-2 w-2 rounded-full bg-red-500" />
-                                Missing Keywords
+                                Missing Keywords {updateData && <span className="text-[10px] font-normal text-muted-foreground ml-2">(Click to add)</span>}
                             </h4>
                             <div className="flex flex-wrap gap-2">
                                 {result.missingKeywords.map((kw, i) => (
-                                    <Badge key={i} variant="secondary" className="bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300 border-none">
-                                        {kw}
+                                    <Badge
+                                        key={i}
+                                        variant="secondary"
+                                        className={`bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300 border-none ${updateData ? 'cursor-pointer hover:bg-red-200 dark:hover:bg-red-900 transition-colors' : ''}`}
+                                        onClick={() => addMissingKeyword(kw)}
+                                    >
+                                        + {kw}
                                     </Badge>
                                 ))}
                             </div>

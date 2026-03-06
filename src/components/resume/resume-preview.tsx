@@ -1,13 +1,14 @@
 "use client"
 
 import { useRef, useState } from "react"
-import { Download, Loader2 } from "lucide-react"
+import { Download, Loader2, Sparkles, Wand2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ResumeData } from "@/lib/types"
 
 interface ResumePreviewProps {
     data: ResumeData
     template?: string
+    updateData?: (newData: Partial<ResumeData>) => void
 }
 
 const ModernTemplate = ({ data }: { data: ResumeData }) => {
@@ -387,10 +388,10 @@ const CreativeTemplate = ({ data }: { data: ResumeData }) => {
                 </div>
 
                 <div className="space-y-4">
-                    <h2 className="text-sm font-bold uppercase tracking-widest text-[#38bdf8] border-b border-white/20 pb-1">
+                    <h2 className="text-sm font-bold uppercase tracking-widest text-[#38bdf8] border-b border-[#475569] pb-1">
                         Contact
                     </h2>
-                    <div className="flex flex-col space-y-2 text-xs text-white/80">
+                    <div className="flex flex-col space-y-2 text-xs text-[#cbd5e1]">
                         {personalInfo.email && <span className="break-all">{personalInfo.email}</span>}
                         {personalInfo.phone && <span>{personalInfo.phone}</span>}
                         {personalInfo.address && <span>{personalInfo.address}</span>}
@@ -405,12 +406,12 @@ const CreativeTemplate = ({ data }: { data: ResumeData }) => {
 
                 {skills.length > 0 && (
                     <div className="space-y-4">
-                        <h2 className="text-sm font-bold uppercase tracking-widest text-[#38bdf8] border-b border-white/20 pb-1">
+                        <h2 className="text-sm font-bold uppercase tracking-widest text-[#38bdf8] border-b border-[#475569] pb-1">
                             Skills
                         </h2>
-                        <div className="flex flex-col gap-2 text-xs font-semibold text-white/90">
+                        <div className="flex flex-col gap-2 text-xs font-semibold text-[#e2e8f0]">
                             {skills.map((s) => (
-                                <span key={s.id} className="border border-white/20 rounded-full px-3 py-1 text-center">
+                                <span key={s.id} className="border border-[#475569] rounded-full px-3 py-1 text-center">
                                     {s.name}
                                 </span>
                             ))}
@@ -420,15 +421,15 @@ const CreativeTemplate = ({ data }: { data: ResumeData }) => {
 
                 {education.length > 0 && (
                     <div className="space-y-4">
-                        <h2 className="text-sm font-bold uppercase tracking-widest text-[#38bdf8] border-b border-white/20 pb-1">
+                        <h2 className="text-sm font-bold uppercase tracking-widest text-[#38bdf8] border-b border-[#475569] pb-1">
                             Education
                         </h2>
-                        <div className="space-y-4 text-white/80">
+                        <div className="space-y-4 text-[#cbd5e1]">
                             {education.map((edu) => (
                                 <div key={edu.id}>
                                     <div className="text-xs font-bold text-white mb-1">{edu.school}</div>
                                     <div className="text-xs mb-1 italic">{edu.degree}</div>
-                                    <div className="text-[10px] opacity-70">
+                                    <div className="text-[10px] text-[#94a3b8]">
                                         {edu.startDate} {edu.endDate ? `- ${edu.endDate}` : ""}
                                     </div>
                                 </div>
@@ -439,10 +440,10 @@ const CreativeTemplate = ({ data }: { data: ResumeData }) => {
 
                 {languages.length > 0 && (
                     <div className="space-y-3">
-                        <h2 className="text-sm font-bold uppercase tracking-widest text-[#38bdf8] border-b border-white/20 pb-1">Languages</h2>
-                        <div className="text-xs text-white/80 space-y-1">
+                        <h2 className="text-sm font-bold uppercase tracking-widest text-[#38bdf8] border-b border-[#475569] pb-1">Languages</h2>
+                        <div className="text-xs text-[#cbd5e1] space-y-1">
                             {languages.map(l => (
-                                <div key={l.id}>{l.language} <span className="opacity-60">({l.proficiency})</span></div>
+                                <div key={l.id}>{l.language} <span className="text-[#94a3b8]">({l.proficiency})</span></div>
                             ))}
                         </div>
                     </div>
@@ -696,11 +697,37 @@ const BeigeMinimalTemplate = ({ data }: { data: ResumeData }) => {
 };
 
 
-export function ResumePreview({ data, template = "modern" }: ResumePreviewProps) {
+export function ResumePreview({ data, template = "modern", updateData }: ResumePreviewProps) {
 
     const { personalInfo } = data
     const targetRef = useRef<HTMLDivElement>(null)
     const [isDownloading, setIsDownloading] = useState(false)
+    const [isOptimizing, setIsOptimizing] = useState(false)
+
+    const handleOptimize = async () => {
+        if (!updateData) return
+        setIsOptimizing(true)
+        try {
+            const response = await fetch("/api/generate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    prompt: JSON.stringify(data),
+                    type: "resume-optimizer"
+                })
+            })
+
+            const result = await response.json()
+            if (response.ok && result.text) {
+                const optimizedData = JSON.parse(result.text)
+                updateData(optimizedData)
+            }
+        } catch (error) {
+            console.error("Optimization failed:", error)
+        } finally {
+            setIsOptimizing(false)
+        }
+    }
 
     const downloadPdf = async () => {
         if (!targetRef.current) return;
@@ -742,9 +769,9 @@ export function ResumePreview({ data, template = "modern" }: ResumePreviewProps)
                     const styleTags = clonedDoc.querySelectorAll("style");
                     styleTags.forEach((styleTag) => {
                         if (styleTag.textContent) {
-                            // Regex to find lab(), oklch(), color-mix() and replace with rgb(0,0,0)
+                            // Regex to find lab(), oklch(), oklab(), color-mix() and replace with rgb(0,0,0)
                             // This catch-all helps when html2canvas parses the stylesheets
-                            const unsupportedColorRegex = /(lab|oklch|lch|color-mix|hwb)\([^)]+\)/g;
+                            const unsupportedColorRegex = /(oklab|lab|oklch|lch|color-mix|hwb)\([^)]+\)/g;
                             styleTag.textContent = styleTag.textContent.replace(unsupportedColorRegex, "rgb(0, 0, 0)");
                         }
                     });
@@ -756,7 +783,7 @@ export function ResumePreview({ data, template = "modern" }: ResumePreviewProps)
                             const style = window.getComputedStyle(el);
 
                             // Regex for detecting unsupported colors within property values
-                            const unsupportedColorRegex = /(lab|oklch|lch|color-mix|hwb)\([^)]+\)/g;
+                            const unsupportedColorRegex = /(oklab|lab|oklch|lch|color-mix|hwb)\([^)]+\)/g;
 
                             // List of properties prone to containing colors
                             const colorProperties = [
@@ -855,7 +882,23 @@ export function ResumePreview({ data, template = "modern" }: ResumePreviewProps)
 
     return (
         <div className="flex flex-col h-full bg-zinc-100 dark:bg-zinc-900 border relative">
-            <div className="absolute top-4 right-4 z-10 hidden lg:block">
+            <div className="absolute top-4 right-4 z-10 hidden lg:flex gap-2">
+                {updateData && (
+                    <Button
+                        variant="secondary"
+                        size="sm"
+                        className="shadow-md bg-purple-600 hover:bg-purple-700 text-white border-none"
+                        onClick={handleOptimize}
+                        disabled={isOptimizing}
+                    >
+                        {isOptimizing ? (
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        ) : (
+                            <Wand2 className="h-4 w-4 mr-2" />
+                        )}
+                        {isOptimizing ? "Optimizing..." : "AI Optimize"}
+                    </Button>
+                )}
                 <Button onClick={downloadPdf} size="sm" className="shadow-md" disabled={isDownloading}>
                     {isDownloading ? (
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -878,7 +921,22 @@ export function ResumePreview({ data, template = "modern" }: ResumePreviewProps)
                 </div>
             </div>
 
-            <div className="lg:hidden p-4 border-t bg-background">
+            <div className="lg:hidden p-4 border-t bg-background flex flex-col gap-2">
+                {updateData && (
+                    <Button
+                        variant="secondary"
+                        className="w-full bg-purple-600 hover:bg-purple-700 text-white border-none"
+                        onClick={handleOptimize}
+                        disabled={isOptimizing}
+                    >
+                        {isOptimizing ? (
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        ) : (
+                            <Wand2 className="h-4 w-4 mr-2" />
+                        )}
+                        {isOptimizing ? "Optimizing..." : "AI Optimize Content"}
+                    </Button>
+                )}
                 <Button onClick={downloadPdf} className="w-full" disabled={isDownloading}>
                     {isDownloading ? (
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />

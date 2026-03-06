@@ -1,25 +1,32 @@
 "use client"
 
 import Link from "next/link";
-import { ArrowRight, Bot, FileText, Download, CheckCircle2 } from "lucide-react";
+import { ArrowRight, Bot, FileText, Download, CheckCircle2, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 export default function Home() {
   const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [returningUser, setReturningUser] = useState(false);
 
   useEffect(() => {
     const user = sessionStorage.getItem("ai_resume_user");
     if (user) {
-      router.replace("/templates");
+      setIsLoggedIn(true);
     } else {
       setIsLoggedIn(false);
     }
-  }, [router]);
+
+    if (typeof window !== 'undefined') {
+      const isReturning = localStorage.getItem("ai_resume_returning_user") === "true";
+      setReturningUser(isReturning);
+    }
+  }, []);
 
   const authHref = isLoggedIn ? "/templates" : "/login";
 
@@ -71,9 +78,9 @@ export default function Home() {
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-6 mt-8">
-              <Link href={authHref}>
-                <Button size="lg" className="px-8 h-14 rounded-none border border-primary bg-primary/20 text-primary hover:bg-primary hover:text-primary-foreground font-bold tracking-widest uppercase transition-all shadow-[0_0_15px_-3px_rgba(0,243,255,0.4)] hover:shadow-[0_0_30px_-5px_rgba(0,243,255,0.8)]">
-                  Initialize Builder <ArrowRight className="ml-2 h-5 w-5" />
+              <Link href={authHref} passHref>
+                <Button asChild size="lg" className="px-8 h-14 rounded-none border border-primary bg-primary/20 text-primary hover:bg-primary hover:text-primary-foreground font-bold tracking-widest uppercase transition-all shadow-[0_0_15px_-3px_rgba(0,243,255,0.4)] hover:shadow-[0_0_30px_-5px_rgba(0,243,255,0.8)]">
+                  <span>Initialize Builder <ArrowRight className="ml-2 h-5 w-5" /></span>
                 </Button>
               </Link>
             </div>
@@ -82,7 +89,7 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section className="w-full py-24 bg-background relative">
+      <section id="features" className="w-full py-24 bg-background relative">
         <div className="container mx-auto px-4 md:px-6 max-w-7xl relative z-10">
           <motion.div
             className="text-center mb-16"
@@ -106,43 +113,81 @@ export default function Home() {
                 icon: Bot,
                 title: "Neural Network Content",
                 desc: "Generate highly optimized professional bullet points based on minimal raw input data.",
-                href: authHref,
+                href: "/tools/bullet-generator",
                 cta: "Execute AI",
               },
               {
                 icon: FileText,
                 title: "ATS-Bypass Protocols",
                 desc: "Clean, structured data templates architected to pass Applicant Tracking Systems flawlessly.",
-                href: "/templates",
+                href: "/tools/ats-scanner",
                 cta: "Access Schematics",
               },
               {
                 icon: Download,
                 title: "Instant Compilation",
                 desc: "Compile and download your final resume matrix instantly as a perfectly formatted PDF.",
-                href: authHref,
+                href: "/builder",
                 cta: "Initiate Export",
               },
-            ].map((feature, idx) => (
-              <motion.div key={idx} variants={fadeIn}>
-                <Link href={feature.href} className="group block h-full">
-                  <Card className="bg-card/40 backdrop-blur-md border border-border/50 hover:border-primary/50 shadow-lg hover:shadow-[0_0_30px_-5px_rgba(0,243,255,0.3)] transition-all duration-500 h-full cursor-pointer relative overflow-hidden group">
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    <CardHeader className="relative z-10">
-                      <feature.icon className="h-12 w-12 text-primary mb-4 drop-shadow-[0_0_8px_rgba(0,243,255,0.8)] group-hover:scale-110 transition-transform duration-500" />
-                      <CardTitle className="font-bold tracking-wide uppercase">{feature.title}</CardTitle>
-                      <CardDescription className="font-mono text-muted-foreground">{feature.desc}</CardDescription>
-                    </CardHeader>
-                    <CardContent className="relative z-10 mt-auto">
-                      <span className="inline-flex items-center gap-2 text-sm font-bold text-primary tracking-widest uppercase group-hover:gap-4 transition-all duration-300">
-                        {feature.cta} <ArrowRight className="h-4 w-4" />
-                      </span>
-                    </CardContent>
-                  </Card>
-                </Link>
-              </motion.div>
-            ))}
+            ].map((feature, idx) => {
+              const isLocked = !isLoggedIn;
+              const cardHref = isLocked ? "/login" : feature.href;
+
+              return (
+                <motion.div key={idx} variants={fadeIn}>
+                  <Link href={cardHref} className="group block h-full">
+                    <Card className={cn(
+                      "bg-card/40 backdrop-blur-md border border-border/50 hover:border-primary/50 shadow-lg transition-all duration-500 h-full cursor-pointer relative overflow-hidden group",
+                      !isLocked && "hover:shadow-[0_0_30px_-5px_rgba(0,243,255,0.3)]",
+                      isLocked && "grayscale-[0.5] opacity-80"
+                    )}>
+                      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                      {isLocked && (
+                        <div className="absolute top-4 right-4 z-20">
+                          <div className="bg-background/80 backdrop-blur-sm border border-border/50 p-2 rounded-full shadow-lg">
+                            <Lock className="h-4 w-4 text-muted-foreground" />
+                          </div>
+                        </div>
+                      )}
+
+                      <CardHeader className="relative z-10">
+                        <feature.icon className={cn(
+                          "h-12 w-12 text-primary mb-4 transition-transform duration-500",
+                          !isLocked && "drop-shadow-[0_0_8px_rgba(0,243,255,0.8)] group-hover:scale-110"
+                        )} />
+                        <CardTitle className="font-bold tracking-wide uppercase flex items-center gap-2">
+                          {feature.title}
+                        </CardTitle>
+                        <CardDescription className="font-mono text-muted-foreground">{feature.desc}</CardDescription>
+                      </CardHeader>
+                      <CardContent className="relative z-10 mt-auto">
+                        <span className="inline-flex items-center gap-2 text-sm font-bold text-primary tracking-widest uppercase group-hover:gap-4 transition-all duration-300">
+                          {isLocked ? (returningUser ? "Sign In to Access" : "Sign Up to Access") : feature.cta} <ArrowRight className="h-4 w-4" />
+                        </span>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                </motion.div>
+              );
+            })}
           </motion.div>
+
+          {!isLoggedIn && (
+            <motion.div
+              className="mt-16 text-center"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+            >
+              <Link href={returningUser ? "/login" : "/signup"}>
+                <Button variant="outline" className="border-primary/30 text-primary hover:bg-primary/10 px-8 py-6 h-auto text-lg font-bold tracking-widest uppercase">
+                  {returningUser ? "Sign In to Unlock Pro Tools" : "Sign Up to Unlock Pro Tools"} <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+            </motion.div>
+          )}
         </div>
       </section>
 
@@ -211,9 +256,9 @@ export default function Home() {
             Join thousands of optimized candidates who bypassed the ATS filters using our platform.
           </p>
           <div className="pt-4">
-            <Link href={authHref}>
-              <Button size="lg" className="px-10 h-16 rounded-none bg-primary text-primary-foreground font-black tracking-widest uppercase transition-all shadow-[0_0_20px_var(--primary)] hover:shadow-[0_0_40px_var(--primary)] hover:scale-105 border border-primary/50">
-                Execute Compilation
+            <Link href={authHref} passHref>
+              <Button asChild size="lg" className="px-10 h-16 rounded-none bg-primary text-primary-foreground font-black tracking-widest uppercase transition-all shadow-[0_0_20px_var(--primary)] hover:shadow-[0_0_40px_var(--primary)] hover:scale-105 border border-primary/50">
+                <span>Execute Compilation</span>
               </Button>
             </Link>
           </div>

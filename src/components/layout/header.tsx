@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useRouter, usePathname } from "next/navigation"
-import { FileText, LogOut } from "lucide-react"
+import { FileText, LogOut, UserPlus, LogIn } from "lucide-react"
 import { ThemeToggle } from "./theme-toggle"
 import { Button } from "@/components/ui/button"
+import { supabase } from "@/lib/supabase"
 
 export function Header() {
     const router = useRouter()
@@ -14,13 +15,33 @@ export function Header() {
     const [userName, setUserName] = useState<string | null>(null)
     const [mounted, setMounted] = useState(false)
 
-    // Re-read session whenever the route changes (handles post-login redirect)
+    // Re-sync session whenever the route changes (handles post-login redirect)
     useEffect(() => {
         setMounted(true)
-        const email = sessionStorage.getItem("ai_resume_user")
-        const name = sessionStorage.getItem("ai_resume_name")
-        setUserEmail(email)
-        setUserName(name)
+        const syncSession = async () => {
+            // Priority 1: Check sessionStorage (the app's logic)
+            let email = sessionStorage.getItem("ai_resume_user")
+            let name = sessionStorage.getItem("ai_resume_name")
+
+            // Priority 2: Check Supabase session (for fresh OAuth logins or refreshes)
+            if (!email) {
+                const { data: { session } } = await supabase.auth.getSession()
+                if (session?.user) {
+                    email = session.user.email || null
+                    name = session.user.user_metadata?.full_name || session.user.user_metadata?.name || null
+
+                    if (email) sessionStorage.setItem("ai_resume_user", email)
+                    if (name) sessionStorage.setItem("ai_resume_name", name)
+                    // Mark as returning since they have a session
+                    localStorage.setItem("ai_resume_returning_user", "true")
+                }
+            }
+
+            setUserEmail(email)
+            setUserName(name)
+        }
+
+        syncSession()
     }, [pathname])
 
 
@@ -50,6 +71,11 @@ export function Header() {
 
                 <div className="flex flex-1 items-center justify-end space-x-3">
                     <nav className="flex items-center space-x-3">
+                        <Link href="/#features" passHref>
+                            <Button asChild variant="ghost" size="sm" className="hidden lg:inline-flex">
+                                <span>Features</span>
+                            </Button>
+                        </Link>
                         {mounted && (
                             userEmail ? (
                                 <>
@@ -63,10 +89,17 @@ export function Header() {
                                         </span>
                                     </div>
 
+                                    {/* Templates shortcut */}
+                                    <Link href="/templates" passHref>
+                                        <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
+                                            <span>Templates</span>
+                                        </Button>
+                                    </Link>
+
                                     {/* My Resumes shortcut */}
-                                    <Link href="/builder">
-                                        <Button variant="outline" size="sm">
-                                            My Resume
+                                    <Link href="/builder" passHref>
+                                        <Button asChild variant="outline" size="sm">
+                                            <span>My Resume</span>
                                         </Button>
                                     </Link>
 
@@ -84,14 +117,24 @@ export function Header() {
                                 </>
                             ) : (
                                 <>
-                                    <Link href="/login">
-                                        <Button variant="ghost" size="sm">
-                                            Sign In
-                                        </Button>
-                                    </Link>
-                                    <Link href="/login">
-                                        <Button variant="default" size="sm">
-                                            Build Resume
+                                    {/* Conditional Sign In vs Sign Up based on returning user flag */}
+                                    {typeof window !== 'undefined' && localStorage.getItem("ai_resume_returning_user") === "true" ? (
+                                        <Link href="/login" passHref>
+                                            <Button asChild variant="ghost" size="sm">
+                                                <span>Sign In</span>
+                                            </Button>
+                                        </Link>
+                                    ) : (
+                                        <Link href="/signup" passHref>
+                                            <Button asChild variant="ghost" size="sm">
+                                                <span>Sign Up</span>
+                                            </Button>
+                                        </Link>
+                                    )}
+
+                                    <Link href="/login" passHref>
+                                        <Button asChild variant="default" size="sm">
+                                            <span>Build Resume</span>
                                         </Button>
                                     </Link>
                                 </>
