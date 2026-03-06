@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { OperationalSequence } from "@/components/home/operational-sequence";
 
 export default function Home() {
   const router = useRouter();
@@ -191,58 +192,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* How It Works Section */}
-      <section className="w-full py-24 bg-card/10 relative border-t border-border/50">
-        <div className="container mx-auto px-4 md:px-6 max-w-7xl relative z-10">
-          <motion.div
-            className="text-center mb-20"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.8 }}
-            variants={fadeIn}
-          >
-            <h2 className="text-3xl font-black tracking-tighter uppercase sm:text-4xl text-foreground">Operational Sequence</h2>
-            <p className="mt-4 text-muted-foreground font-mono md:text-lg">Follow the protocol to generate your target artifact.</p>
-          </motion.div>
-          <motion.div
-            className="grid gap-12 md:grid-cols-4 relative"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-            variants={staggerContainer}
-          >
-            {/* Glowing connection line */}
-            <div className="hidden md:block absolute top-12 left-[10%] w-[80%] h-[2px] bg-primary/20 -z-10 shadow-[0_0_10px_var(--primary)]" />
-
-            {[
-              { step: "01", title: "Input Data", desc: "Feed raw career endpoints into the system.", href: "/builder" },
-              { step: "02", title: "AI Processing", desc: "Neural networks optimize and expand bullet points.", href: "/tools/bullet-generator" },
-              { step: "03", title: "Manual Override", desc: "Review and calibrate the generated matrix.", href: "/builder" },
-              { step: "04", title: "Compile PDF", desc: "Export final ATS-compliant artifact.", href: "/builder" }
-            ].map((item, i) => {
-              const cardHref = !isLoggedIn ? "/login" : item.href;
-              return (
-                <motion.div key={i} variants={fadeIn}>
-                  <Link href={cardHref} className="flex flex-col items-center text-center space-y-6 group cursor-pointer transition-transform hover:scale-105">
-                    <div className="w-24 h-24 bg-background/80 backdrop-blur border border-primary/50 flex items-center justify-center text-3xl font-black text-primary shadow-[0_0_15px_rgba(0,243,255,0.2)] group-hover:shadow-[0_0_25px_rgba(0,243,255,0.6)] group-hover:border-primary transition-all duration-500 relative">
-                      {/* Digital corner accents */}
-                      <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-primary"></div>
-                      <div className="absolute top-0 right-0 w-2 h-2 border-t-2 border-r-2 border-primary"></div>
-                      <div className="absolute bottom-0 left-0 w-2 h-2 border-b-2 border-l-2 border-primary"></div>
-                      <div className="absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 border-primary"></div>
-                      {item.step}
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-bold uppercase tracking-wider mb-2 group-hover:text-primary transition-colors">{item.title}</h3>
-                      <p className="text-muted-foreground font-mono text-sm">{item.desc}</p>
-                    </div>
-                  </Link>
-                </motion.div>
-              );
-            })}
-          </motion.div>
-        </div>
-      </section>
+      {/* Operational Sequence Section */}
+      <OperationalSequence />
 
       {/* CTA Section */}
       <section className="w-full py-24 bg-background relative border-t border-primary/30 overflow-hidden">
