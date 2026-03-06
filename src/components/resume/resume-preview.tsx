@@ -707,8 +707,21 @@ export function ResumePreview({ data, template = "modern" }: ResumePreviewProps)
         setIsDownloading(true);
 
         try {
-            const html2canvas = (await import("html2canvas")).default;
-            const { jsPDF } = await import("jspdf");
+            let html2canvas;
+            try {
+                html2canvas = (await import("html2canvas")).default;
+            } catch (e) {
+                throw new Error("Failed to load html2canvas library.");
+            }
+
+            let jsPDF;
+            try {
+                const jspdfModule = await import("jspdf");
+                // @ts-ignore
+                jsPDF = jspdfModule.jsPDF || jspdfModule.default || jspdfModule;
+            } catch (e) {
+                throw new Error("Failed to load jspdf library.");
+            }
 
             const element = targetRef.current;
 
