@@ -95,7 +95,11 @@ export default function SignupPage() {
             }
         } catch (err: any) {
             const message = err?.message || "Failed to sign up. Please try again.";
-            setError(message);
+            if (message.toLowerCase().includes("rate limit exceeded")) {
+                setError("Email rate limit exceeded. Please wait a few minutes before trying again or use Google Sign-In.");
+            } else {
+                setError(message);
+            }
             setIsLoading(false);
         }
     };
