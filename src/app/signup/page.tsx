@@ -19,6 +19,7 @@ export default function SignupPage() {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [fieldErrors, setFieldErrors] = useState<{ name?: string; email?: string; password?: string }>({});
+    const [inputReady, setInputReady] = useState(false);
 
     // If already logged in, redirect to templates
     useEffect(() => {
@@ -32,7 +33,8 @@ export default function SignupPage() {
             setName("");
             setEmail("");
             setPassword("");
-        }, 500);
+            setInputReady(true); // Allow user interaction now
+        }, 300);
 
         return () => clearTimeout(timer);
     }, [router]);
@@ -149,15 +151,19 @@ export default function SignupPage() {
                             <div className="relative">
                                 <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                                 <Input
-                                    id="name"
+                                    id="signup-fullname-x"
+                                    name="signup-fullname-x"
                                     type="text"
                                     className={cn("pl-9", fieldErrors.name && "border-destructive focus-visible:ring-destructive")}
                                     value={name}
+                                    readOnly={!inputReady}
+                                    onFocus={() => setInputReady(true)}
                                     onChange={(e) => {
                                         setName(e.target.value);
                                         if (fieldErrors.name) setFieldErrors(prev => ({ ...prev, name: undefined }));
                                     }}
                                     autoComplete="off"
+                                    data-form-type="other"
                                 />
                                 {fieldErrors.name && (
                                     <p className="text-[10px] font-mono font-bold text-destructive mt-1 uppercase tracking-tighter">
@@ -172,16 +178,23 @@ export default function SignupPage() {
                             </label>
                             <div className="relative">
                                 <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                                {/* Hidden honeypot field to trick browser autofill away from real email */}
+                                <input type="text" name="username" style={{ display: 'none' }} autoComplete="username" tabIndex={-1} />
                                 <Input
-                                    id="email"
-                                    type="email"
+                                    id="signup-email-x"
+                                    name="signup-email-x"
+                                    type="text"
+                                    inputMode="email"
                                     className={cn("pl-9", fieldErrors.email && "border-destructive focus-visible:ring-destructive")}
                                     value={email}
+                                    readOnly={!inputReady}
+                                    onFocus={() => setInputReady(true)}
                                     onChange={(e) => {
                                         setEmail(e.target.value);
                                         if (fieldErrors.email) setFieldErrors(prev => ({ ...prev, email: undefined }));
                                     }}
-                                    autoComplete="one-time-code"
+                                    autoComplete="off"
+                                    data-form-type="other"
                                 />
                                 {fieldErrors.email && (
                                     <p className="text-[10px] font-mono font-bold text-destructive mt-1 uppercase tracking-tighter">
@@ -200,15 +213,19 @@ export default function SignupPage() {
                             <div className="relative">
                                 <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                                 <Input
-                                    id="password"
+                                    id="signup-pw-x"
+                                    name="signup-pw-x"
                                     type="password"
                                     className={cn("pl-9", fieldErrors.password && "border-destructive focus-visible:ring-destructive")}
                                     value={password}
+                                    readOnly={!inputReady}
+                                    onFocus={() => setInputReady(true)}
                                     onChange={(e) => {
                                         setPassword(e.target.value);
                                         if (fieldErrors.password) setFieldErrors(prev => ({ ...prev, password: undefined }));
                                     }}
                                     autoComplete="new-password"
+                                    data-form-type="other"
                                 />
                                 {fieldErrors.password && (
                                     <p className="text-[10px] font-mono font-bold text-destructive mt-1 uppercase tracking-tighter">
