@@ -85,6 +85,8 @@ export default function LoginPage() {
             const message = err?.message || "Failed to login. Please try again.";
             if (message.toLowerCase().includes("invalid login credentials")) {
                 setFieldErrors({ password: "The password you entered is incorrect" });
+            } else if (message.toLowerCase().includes("rate limit exceeded")) {
+                setError("Too many login attempts. Please wait a few minutes before trying again or use Google Sign-In.");
             } else {
                 setError(message);
             }
