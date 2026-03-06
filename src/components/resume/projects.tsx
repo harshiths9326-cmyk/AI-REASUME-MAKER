@@ -55,12 +55,39 @@ export function Projects({ data, updateData }: ProjectsProps) {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <Label>Project Title</Label>
+                                <Label className="flex justify-between">
+                                    <span>Project Title</span>
+                                    <span className={`text-[10px] ${project.title.length > 100 ? 'text-destructive font-bold' : 'text-muted-foreground'}`}>
+                                        {project.title.length}/100
+                                    </span>
+                                </Label>
                                 <Input
-                                    placeholder="Portfolio Website"
+                                    placeholder="portfolio-website"
                                     value={project.title}
-                                    onChange={(e) => updateProject(project.id, "title", e.target.value)}
+                                    onChange={(e) => {
+                                        let val = e.target.value.toLowerCase();
+
+                                        // Length limit
+                                        if (val.length > 100) val = val.substring(0, 100);
+
+                                        // Character validation: allow letters, digits, '.', '_', '-'
+                                        // Note: We don't block typing yet, but we can show an error or filter
+                                        // The user said "can include...", implying others should be excluded.
+                                        // Let's filter out characters that are NOT allowed.
+                                        val = val.replace(/[^a-z0-9._-]/g, "");
+
+                                        // Cannot contain '---'
+                                        while (val.includes("---")) {
+                                            val = val.replace("---", "--"); // Reduce triple dashes to double
+                                        }
+
+                                        updateProject(project.id, "title", val);
+                                    }}
+                                    className={project.title.length >= 100 ? "border-destructive focus-visible:ring-destructive" : ""}
                                 />
+                                <p className="text-[10px] text-muted-foreground leading-tight">
+                                    Lowercase, max 100 chars. Allowed: a-z, 0-9, ., _, -. No "---".
+                                </p>
                             </div>
                             <div className="space-y-2">
                                 <Label>Project Link / URL (Optional)</Label>
