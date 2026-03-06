@@ -50,8 +50,13 @@ export async function POST(req: Request) {
             systemMessage += " Please rewrite the provided content to be professional and suitable for a resume."
         }
 
+        const isComplexTask = ["resume-optimizer", "resume-review", "cover-letter", "interview-prep"].includes(type)
+        const model = isComplexTask
+            ? "google/gemini-2.0-pro-exp-02-05:free"
+            : "meta-llama/llama-3-8b-instruct"
+
         const response = await openai.chat.completions.create({
-            model: type === "resume-optimizer" ? "google/gemini-2.0-pro-exp-02-05:free" : "meta-llama/llama-3-8b-instruct",
+            model: model,
             messages: [
                 {
                     role: "system",
@@ -64,7 +69,7 @@ export async function POST(req: Request) {
             ],
             response_format: type === "resume-optimizer" ? { type: "json_object" } : undefined,
             temperature: 0.3,
-            max_tokens: ["cover-letter", "interview-prep", "resume-review", "resume-optimizer"].includes(type) ? 1500 : 500,
+            max_tokens: isComplexTask ? 2000 : 800,
         })
 
         const generatedText = response.choices[0]?.message?.content?.trim() || ""

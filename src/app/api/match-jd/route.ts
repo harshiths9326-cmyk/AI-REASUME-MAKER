@@ -48,7 +48,7 @@ ${JSON.stringify(resumeData)}
 `
 
         const response = await openai.chat.completions.create({
-            model: "meta-llama/llama-3-8b-instruct",
+            model: "google/gemini-2.0-pro-exp-02-05:free",
             messages: [
                 {
                     role: "system",
@@ -59,7 +59,7 @@ ${JSON.stringify(resumeData)}
                     content: prompt,
                 },
             ],
-            temperature: 0.3, // Lower temperature for more factual analysis
+            temperature: 0.1,
             response_format: { type: "json_object" }
         })
 
