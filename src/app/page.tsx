@@ -29,7 +29,7 @@ export default function Home() {
     }
   }, []);
 
-  const authHref = isLoggedIn ? "/templates" : "/login";
+  const authHref = isLoggedIn ? "/templates" : "/signup";
 
   const fadeIn = {
     hidden: { opacity: 0, y: 20 },
@@ -133,7 +133,7 @@ export default function Home() {
               },
             ].map((feature, idx) => {
               const isLocked = !isLoggedIn;
-              const cardHref = isLocked ? "/login" : feature.href;
+              const cardHref = isLocked ? "/signup" : feature.href;
 
               return (
                 <motion.div key={idx} variants={fadeIn}>
@@ -182,7 +182,7 @@ export default function Home() {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
             >
-              <Link href={returningUser ? "/login" : "/signup"}>
+              <Link href="/signup">
                 <Button variant="outline" className="border-primary/30 text-primary hover:bg-primary/10 px-8 py-6 h-auto text-lg font-bold tracking-widest uppercase">
                   {returningUser ? "Sign In to Unlock Pro Tools" : "Sign Up to Unlock Pro Tools"} <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
