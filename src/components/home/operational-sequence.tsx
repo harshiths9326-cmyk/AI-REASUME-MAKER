@@ -96,7 +96,7 @@ export function OperationalSequence() {
                     </div>
 
                     {steps.map((item, i) => {
-                        const cardHref = !isLoggedIn ? "/login" : item.href
+                        const cardHref = !isLoggedIn ? "/signup" : item.href
                         return (
                             <motion.div key={i} variants={fadeIn} className="relative">
                                 <Link
@@ -148,7 +148,7 @@ export function OperationalSequence() {
                         whileInView={{ opacity: 1 }}
                         viewport={{ once: true }}
                     >
-                        <Link href="/login" className="flex items-center gap-2 px-4 py-2 border border-primary/30 bg-primary/5 rounded font-mono text-[10px] uppercase tracking-widest text-primary animate-pulse">
+                        <Link href="/signup" className="flex items-center gap-2 px-4 py-2 border border-primary/30 bg-primary/5 rounded font-mono text-[10px] uppercase tracking-widest text-primary animate-pulse">
                             <Lock className="h-3 w-3" /> System Restricted - Authentication Required
                         </Link>
                     </motion.div>

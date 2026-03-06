@@ -13,7 +13,7 @@ export function useAuthGuard() {
     useEffect(() => {
         const user = sessionStorage.getItem("ai_resume_user")
         if (!user) {
-            router.replace("/login")
+            router.replace("/signup")
         } else {
             setIsAuthed(true)
         }
