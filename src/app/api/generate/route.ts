@@ -1,17 +1,22 @@
 import { NextResponse } from "next/server"
 import { OpenAI } from "openai"
 
-// Model fallback chain — ordered by preference.
-// If a model is rate-limited or unavailable, the next one is tried automatically.
+// OpenRouter model fallback chain.
+// "openrouter/auto" is the smart router that picks the best available free model automatically.
+// The remaining models are fallbacks ordered by reliability and quality.
 const COMPLEX_MODELS = [
-    "google/gemini-2.0-flash-exp:free",        // Fast, high quality, good rate limits
-    "google/gemini-2.0-pro-exp-02-05:free",    // More powerful, stricter limits
-    "meta-llama/llama-3.1-8b-instruct:free",   // Reliable fallback
-    "meta-llama/llama-3-8b-instruct",          // Final fallback
+    "openrouter/auto",                            // Auto-picks best available free model
+    "meta-llama/llama-3.3-70b-instruct:free",     // Top-tier free model, GPT-4 quality
+    "deepseek/deepseek-chat-v3-0324:free",        // Very capable, frequently available
+    "google/gemini-2.0-flash-exp:free",            // Fast & capable
+    "mistralai/mistral-7b-instruct:free",          // Reliable lightweight model
+    "meta-llama/llama-3.1-8b-instruct:free",       // Good fallback
 ]
 
 const SIMPLE_MODELS = [
+    "openrouter/auto",
     "meta-llama/llama-3.1-8b-instruct:free",
+    "mistralai/mistral-7b-instruct:free",
     "meta-llama/llama-3-8b-instruct",
 ]
 
@@ -80,6 +85,7 @@ export async function POST(req: Request) {
                         { role: "system", content: systemMessage },
                         { role: "user", content: prompt },
                     ],
+                    // Only use json_object for types that specifically need structured JSON output
                     response_format: type === "resume-optimizer" ? { type: "json_object" } : undefined,
                     temperature: 0.3,
                     max_tokens: maxTokens,
@@ -96,16 +102,18 @@ export async function POST(req: Request) {
                 return NextResponse.json({ text: generatedText, model })
 
             } catch (modelError: any) {
-                console.warn(`[generate] Model ${model} failed: ${modelError?.message}`)
+                const errMsg = modelError?.message || String(modelError)
+                console.warn(`[generate] Model ${model} failed: ${errMsg}`)
                 lastError = modelError
                 // Continue to next model in chain
             }
         }
 
-        // All models failed
+        // All models exhausted
+        const errDetail = lastError?.message || "All AI models are currently rate-limited or unavailable."
         console.error("[generate] All models failed. Last error:", lastError)
         return NextResponse.json(
-            { error: lastError?.message || "All AI models are currently unavailable. Please try again in a moment." },
+            { error: `AI Unavailable: ${errDetail}. Please wait a moment and try again, or check your OpenRouter API key.` },
             { status: 503 }
         )
 
