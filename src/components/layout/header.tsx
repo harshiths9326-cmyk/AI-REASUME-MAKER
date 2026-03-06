@@ -134,24 +134,17 @@ export function Header() {
                                 </>
                             ) : (
                                 <>
-                                    {/* Conditional Sign In vs Sign Up based on returning user flag */}
-                                    {typeof window !== 'undefined' && localStorage.getItem("ai_resume_returning_user") === "true" ? (
-                                        <Link href="/login" passHref>
-                                            <Button asChild variant="ghost" size="sm">
-                                                <span>Sign In</span>
-                                            </Button>
-                                        </Link>
-                                    ) : (
-                                        <Link href="/signup" passHref>
-                                            <Button asChild variant="ghost" size="sm">
-                                                <span>Sign Up</span>
-                                            </Button>
-                                        </Link>
-                                    )}
+                                    {/* Sign Up (ghost) */}
+                                    <Link href="/signup" passHref>
+                                        <Button asChild variant="ghost" size="sm">
+                                            <span>Sign Up</span>
+                                        </Button>
+                                    </Link>
 
+                                    {/* Sign In (primary) */}
                                     <Link href="/login" passHref>
                                         <Button asChild variant="default" size="sm">
-                                            <span>Build Resume</span>
+                                            <span>Sign In</span>
                                         </Button>
                                     </Link>
                                 </>
