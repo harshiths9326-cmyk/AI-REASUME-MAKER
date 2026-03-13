@@ -43,6 +43,9 @@ export function ResumeForm({ data, updateData }: ResumeFormProps) {
             if (response.ok && result.success) {
                 setSavedStatus("saved")
                 setTimeout(() => setSavedStatus("idle"), 3000)
+            } else if (response.status === 401) {
+                setSavedStatus("Please sign in to save your progress")
+                console.error("Auth error:", result.error)
             } else {
                 setSavedStatus(result.error || "error")
                 console.error("Save error:", result.error)
