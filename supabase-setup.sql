@@ -3,19 +3,20 @@
 -- 1. Create the resumes table
 create table if not exists resumes (
   id text primary key,
+  user_id uuid references auth.users(id) on delete cascade,
   data jsonb not null,
   updated_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
--- 2. Turn off Row Level Security (RLS) entirely for easy development
---    WARNING: Only do this for development/prototyping!
-alter table resumes disable row level security;
+-- 2. Enable Row Level Security (RLS)
+alter table resumes enable row level security;
 
--- (Alternatively, if you strictly want RLS enabled, run the lines below instead of the alter table above)
--- alter table resumes enable row level security;
--- create policy "Allow public read access" on resumes for select using (true);
--- create policy "Allow public insert" on resumes for insert with check (true);
--- create policy "Allow public update" on resumes for update using (true);
+-- Create policies for resumes
+-- Note: 'id' is the resume's unique string ID (slug)
+create policy "Users can view their own resumes" on resumes for select using (auth.uid() = user_id);
+create policy "Users can insert their own resumes" on resumes for insert with check (auth.uid() = user_id);
+create policy "Users can update their own resumes" on resumes for update using (auth.uid() = user_id);
+create policy "Users can delete their own resumes" on resumes for delete using (auth.uid() = user_id);
 
 -- 3. Create a profiles table to store extended user data
 create table if not exists public.profiles (

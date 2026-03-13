@@ -12,9 +12,24 @@ export async function POST(req: Request) {
             )
         }
 
+        // Get authenticated user
+        const { data: { user }, error: authError } = await supabase.auth.getUser()
+
+        if (authError || !user) {
+            return NextResponse.json(
+                { error: "Authentication required to save resumes" },
+                { status: 401 }
+            )
+        }
+
         const { data: result, error } = await supabase
             .from('resumes')
-            .upsert({ id, data, updated_at: new Date() })
+            .upsert({
+                id,
+                user_id: user.id,
+                data,
+                updated_at: new Date()
+            })
             .select()
 
         if (error) {
@@ -25,7 +40,7 @@ export async function POST(req: Request) {
             )
         }
 
-        return NextResponse.json({ success: true, resume: result[0] })
+        return NextResponse.json({ success: true, resume: result?.[0] })
     } catch (error: any) {
         console.error("Save Resume Error:", error)
         return NextResponse.json(

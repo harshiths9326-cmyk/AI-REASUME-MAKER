@@ -13,16 +13,27 @@ export async function GET(req: Request) {
             )
         }
 
+        // Get authenticated user
+        const { data: { user }, error: authError } = await supabase.auth.getUser()
+
+        if (authError || !user) {
+            return NextResponse.json(
+                { error: "Authentication required to view resumes" },
+                { status: 401 }
+            )
+        }
+
         const { data, error } = await supabase
             .from('resumes')
             .select('*')
             .eq('id', id)
+            .eq('user_id', user.id)
             .single()
 
         if (error) {
             console.error("Supabase fetch error:", error)
             return NextResponse.json(
-                { error: "Failed to fetch resume" },
+                { error: "Resume not found or access denied" },
                 { status: 404 }
             )
         }
