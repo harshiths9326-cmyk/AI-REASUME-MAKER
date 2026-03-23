@@ -41,10 +41,10 @@ export async function POST(req: Request) {
         }
 
         return NextResponse.json({ success: true, resume: result?.[0] })
-    } catch (error: any) {
+    } catch (error) {
         console.error("Save Resume Error:", error)
         return NextResponse.json(
-            { error: error?.message || "Failed to save resume. Please try again." },
+            { error: (error as Error)?.message || "Failed to save resume. Please try again." },
             { status: 500 }
         )
     }

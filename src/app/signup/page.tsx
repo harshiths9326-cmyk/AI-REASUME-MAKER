@@ -95,10 +95,12 @@ export default function SignupPage() {
 
                 router.push("/templates");
             }
-        } catch (err: any) {
-            const message = err?.message || "Failed to sign up. Please try again.";
+        } catch (err) {
+            const message = (err as Error)?.message || "Failed to sign up. Please try again.";
             if (message.toLowerCase().includes("rate limit exceeded")) {
                 setError("Email rate limit exceeded. Please wait a few minutes before trying again or use Google Sign-In.");
+            } else if (message.toLowerCase().includes("email not confirmed")) {
+                setError("Account created, but email confirmation is required. Please check your inbox or disable this in Supabase (Authentication -> Settings).");
             } else {
                 setError(message);
             }
@@ -117,8 +119,8 @@ export default function SignupPage() {
                 },
             });
             if (authError) throw authError;
-        } catch (err: any) {
-            const msg = err?.message || "";
+        } catch (err) {
+            const msg = (err as Error)?.message || "";
             if (msg.toLowerCase().includes("provider is not enabled")) {
                 setError("Google Sign-In is not yet enabled in your Supabase project. Please enable it in the Supabase Dashboard -> Authentication -> Providers.");
             } else {

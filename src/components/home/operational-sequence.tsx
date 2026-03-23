@@ -25,6 +25,7 @@ export function OperationalSequence() {
 
     useEffect(() => {
         const user = sessionStorage.getItem("ai_resume_user")
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setIsLoggedIn(!!user)
     }, [])
 

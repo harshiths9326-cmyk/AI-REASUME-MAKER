@@ -697,6 +697,95 @@ const BeigeMinimalTemplate = ({ data }: { data: ResumeData }) => {
 };
 
 
+// ── Executive Professional ──────────────────────────────────────────────────
+const ExecutiveProfessionalTemplate = ({ data }: { data: ResumeData }) => {
+    const { personalInfo, experience, education, skills, projects, certifications, achievements, languages, links } = data;
+    return (
+        <div className="flex flex-col space-y-5 font-sans">
+            <div className="text-center pb-4 mb-2" style={{ borderBottom: '3px solid #1f2937' }}>
+                <h1 className="text-4xl font-black uppercase text-gray-900 tracking-wider">
+                    {personalInfo.firstName || "FIRST"} <span className="font-light">{personalInfo.lastName || "LAST"}</span>
+                </h1>
+                {personalInfo.jobTitle && <div className="text-lg font-bold text-gray-700 tracking-[0.2em] mt-2 uppercase">{personalInfo.jobTitle}</div>}
+                <div className="flex justify-center flex-wrap gap-x-4 mt-3 text-sm text-gray-600">
+                    {personalInfo.email && <span>{personalInfo.email}</span>}
+                    {personalInfo.phone && <span>· {personalInfo.phone}</span>}
+                    {personalInfo.address && <span>· {personalInfo.address}</span>}
+                </div>
+            </div>
+            {personalInfo.summary && <div><h2 className="text-xs font-bold uppercase tracking-widest text-gray-900 mb-2">Professional Summary</h2><p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">{personalInfo.summary}</p></div>}
+            {experience.length > 0 && <div><h2 className="text-xs font-bold uppercase tracking-widest text-gray-900 mb-3 border-b border-gray-300 pb-1">Experience</h2><div className="space-y-4">{experience.map(exp => (<div key={exp.id}><div className="flex justify-between"><span className="font-bold text-gray-900 text-sm">{exp.position}</span><span className="text-xs text-gray-600 font-medium">{exp.startDate}{exp.endDate ? ` – ${exp.endDate}` : ''}</span></div><div className="text-sm font-semibold text-gray-700">{exp.company}</div><div className="text-sm text-gray-700 mt-1 whitespace-pre-wrap">{exp.description}</div></div>))}</div></div>}
+            {education.length > 0 && <div><h2 className="text-xs font-bold uppercase tracking-widest text-gray-900 mb-3 border-b border-gray-300 pb-1">Education</h2><div className="space-y-3">{education.map(edu => (<div key={edu.id} className="flex justify-between"><div className="w-3/4"><div className="font-bold text-gray-900 text-sm">{edu.school}</div><div className="text-sm text-gray-700">{edu.degree}</div></div><span className="text-xs text-gray-600 font-medium whitespace-nowrap">{edu.startDate}{edu.endDate ? ` – ${edu.endDate}` : ''}</span></div>))}</div></div>}
+            {skills.length > 0 && <div><h2 className="text-xs font-bold uppercase tracking-widest text-gray-900 mb-2 border-b border-gray-300 pb-1">Skills</h2><div className="text-sm text-gray-700">{skills.map(s => s.name).join(' • ')}</div></div>}
+            {projects.length > 0 && <div><h2 className="text-xs font-bold uppercase tracking-widest text-gray-900 mb-3 border-b border-gray-300 pb-1">Projects</h2><div className="space-y-3">{projects.map(proj => (<div key={proj.id}><div className="font-bold text-gray-900 text-sm">{proj.title}</div>{proj.link && <a href={proj.link} className="text-xs text-gray-500 hover:underline">{proj.link}</a>}<div className="text-sm text-gray-700 whitespace-pre-wrap">{proj.description}</div></div>))}</div></div>}
+            {certifications.length > 0 && <div><h2 className="text-xs font-bold uppercase tracking-widest text-gray-900 mb-2 border-b border-gray-300 pb-1">Certifications</h2><div className="space-y-1">{certifications.map(c => (<div key={c.id} className="flex justify-between text-sm"><span className="font-bold text-gray-800">{c.name}{c.issuer ? ` — ${c.issuer}` : ''}</span><span className="text-gray-600">{c.date}</span></div>))}</div></div>}
+            {achievements.length > 0 && <div><h2 className="text-xs font-bold uppercase tracking-widest text-gray-900 mb-2 border-b border-gray-300 pb-1">Achievements</h2><div className="space-y-2">{achievements.map(a => (<div key={a.id}><div className="font-bold text-gray-900 text-sm">{a.title}</div><div className="text-sm text-gray-700 whitespace-pre-wrap">{a.description}</div></div>))}</div></div>}
+            {languages.length > 0 && <div><h2 className="text-xs font-bold uppercase tracking-widest text-gray-900 mb-2 border-b border-gray-300 pb-1">Languages</h2><div className="flex flex-wrap gap-2">{languages.map(l => (<span key={l.id} className="text-sm bg-gray-100 px-3 py-1 rounded border border-gray-200 text-gray-800">{l.language} ({l.proficiency})</span>))}</div></div>}
+            {links.length > 0 && <div><h2 className="text-xs font-bold uppercase tracking-widest text-gray-900 mb-2 border-b border-gray-300 pb-1">Links</h2><div className="flex flex-wrap gap-4">{links.map(l => (<a key={l.id} href={l.url} className="text-sm text-gray-600 hover:text-gray-900 font-medium transition-colors">{l.label}: {l.url}</a>))}</div></div>}
+        </div>
+    );
+};
+
+// ── Modern Tech ─────────────────────────────────────────────────────────────
+const ModernTechTemplate = ({ data }: { data: ResumeData }) => {
+    const { personalInfo, experience, education, skills, projects, certifications, achievements, languages, links } = data;
+    return (
+        <div className="flex flex-col font-sans">
+            <div className="bg-[#0f172a] text-white px-8 py-8 rounded-t-lg">
+                <h1 className="text-4xl font-extrabold tracking-tight">
+                    {personalInfo.firstName || 'FIRST'} <span className="text-teal-400">{personalInfo.lastName || 'LAST'}</span>
+                </h1>
+                {personalInfo.jobTitle && <div className="text-xl font-medium text-slate-300 mt-1">{personalInfo.jobTitle}</div>}
+                <div className="flex flex-wrap gap-x-5 mt-4 text-sm text-slate-400 font-medium">
+                    {personalInfo.email && <span>{personalInfo.email}</span>}
+                    {personalInfo.phone && <span>{personalInfo.phone}</span>}
+                    {personalInfo.address && <span>{personalInfo.address}</span>}
+                </div>
+            </div>
+            <div className="flex flex-col space-y-6 px-8 py-6 bg-white border-x border-b border-slate-200 rounded-b-lg">
+                {personalInfo.summary && <div><h2 className="text-sm font-bold uppercase tracking-wider text-slate-900 mb-2 flex items-center gap-2"><div className="w-2 h-2 bg-teal-500 rounded-full"></div>Summary</h2><p className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">{personalInfo.summary}</p></div>}
+                {experience.length > 0 && <div><h2 className="text-sm font-bold uppercase tracking-wider text-slate-900 mb-4 flex items-center gap-2"><div className="w-2 h-2 bg-teal-500 rounded-full"></div>Experience</h2><div className="space-y-5">{experience.map(exp => (<div key={exp.id} className="relative pl-4 border-l-2 border-slate-200"><div className="absolute w-2 h-2 bg-slate-400 rounded-full -left-[5px] top-1.5"></div><div className="flex justify-between items-start"><span className="font-bold text-slate-900 text-base">{exp.position}</span><span className="text-xs text-slate-500 font-medium bg-slate-100 px-2 py-1 rounded">{exp.startDate}{exp.endDate ? ` – ${exp.endDate}` : ''}</span></div><div className="text-sm text-teal-600 font-semibold mb-2">{exp.company}</div><div className="text-sm text-slate-700 whitespace-pre-wrap">{exp.description}</div></div>))}</div></div>}
+                {education.length > 0 && <div><h2 className="text-sm font-bold uppercase tracking-wider text-slate-900 mb-4 flex items-center gap-2"><div className="w-2 h-2 bg-teal-500 rounded-full"></div>Education</h2><div className="space-y-4">{education.map(edu => (<div key={edu.id} className="flex justify-between items-start"><div><div className="font-bold text-slate-900 text-sm">{edu.school}</div><div className="text-sm text-slate-600 font-medium">{edu.degree}</div></div><span className="text-xs text-slate-500 font-medium">{edu.startDate}{edu.endDate ? ` – ${edu.endDate}` : ''}</span></div>))}</div></div>}
+                {skills.length > 0 && <div><h2 className="text-sm font-bold uppercase tracking-wider text-slate-900 mb-3 flex items-center gap-2"><div className="w-2 h-2 bg-teal-500 rounded-full"></div>Skills</h2><div className="flex flex-wrap gap-2">{skills.map(s => (<span key={s.id} className="bg-slate-100 text-slate-700 hover:bg-teal-50 hover:text-teal-700 transition-colors text-xs font-semibold px-3 py-1.5 rounded border border-slate-200">{s.name}</span>))}</div></div>}
+                {projects.length > 0 && <div><h2 className="text-sm font-bold uppercase tracking-wider text-slate-900 mb-4 flex items-center gap-2"><div className="w-2 h-2 bg-teal-500 rounded-full"></div>Projects</h2><div className="grid grid-cols-1 gap-4">{projects.map(proj => (<div key={proj.id} className="bg-slate-50 p-4 rounded-lg border border-slate-200"><div className="font-bold text-slate-900 mb-1">{proj.title}</div>{proj.link && <a href={proj.link} className="text-xs text-teal-600 hover:underline block mb-2">{proj.link}</a>}<div className="text-sm text-slate-700 whitespace-pre-wrap">{proj.description}</div></div>))}</div></div>}
+                {certifications.length > 0 && <div><h2 className="text-sm font-bold uppercase tracking-wider text-slate-900 mb-3 flex items-center gap-2"><div className="w-2 h-2 bg-teal-500 rounded-full"></div>Certifications</h2><div className="space-y-2">{certifications.map(c => (<div key={c.id} className="flex justify-between items-center text-sm p-2 bg-slate-50 rounded border border-slate-100"><span className="font-bold text-slate-800">{c.name}{c.issuer ?  <span className="font-normal text-slate-500">at {c.issuer}</span> : ''}</span><span className="text-slate-500 text-xs font-medium">{c.date}</span></div>))}</div></div>}
+                {achievements.length > 0 && <div><h2 className="text-sm font-bold uppercase tracking-wider text-slate-900 mb-3 flex items-center gap-2"><div className="w-2 h-2 bg-teal-500 rounded-full"></div>Achievements</h2><div className="space-y-3">{achievements.map(a => (<div key={a.id} className="pl-3 border-l-2 border-teal-200"><div className="font-bold text-sm text-slate-800">{a.title}</div><div className="text-sm text-slate-600 whitespace-pre-wrap mt-1">{a.description}</div></div>))}</div></div>}
+                {languages.length > 0 && <div><h2 className="text-sm font-bold uppercase tracking-wider text-slate-900 mb-3 flex items-center gap-2"><div className="w-2 h-2 bg-teal-500 rounded-full"></div>Languages</h2><div className="flex flex-wrap gap-3">{languages.map(l => (<div key={l.id} className="flex flex-col text-sm border border-slate-200 rounded p-2 bg-slate-50"><span className="font-bold text-slate-800">{l.language}</span><span className="text-xs text-slate-500">{l.proficiency}</span></div>))}</div></div>}
+                {links.length > 0 && <div><h2 className="text-sm font-bold uppercase tracking-wider text-slate-900 mb-3 flex items-center gap-2"><div className="w-2 h-2 bg-teal-500 rounded-full"></div>Links</h2><div className="flex flex-wrap gap-4">{links.map(l => (<a key={l.id} href={l.url} className="text-sm font-medium text-teal-600 hover:text-teal-700 hover:underline">{l.label}: {l.url}</a>))}</div></div>}
+            </div>
+        </div>
+    );
+};
+
+// ── Elegant Serif ───────────────────────────────────────────────────────────
+const ElegantSerifTemplate = ({ data }: { data: ResumeData }) => {
+    const { personalInfo, experience, education, skills, projects, certifications, achievements, languages, links } = data;
+    return (
+        <div className="flex flex-col space-y-6" style={{ fontFamily: 'Merriweather, Georgia, serif', color: '#111827' }}>
+            <div className="text-center py-6 border-b-2 border-gray-900">
+                <h1 className="text-5xl font-normal tracking-wide text-black mb-2">
+                    {personalInfo.firstName || 'FIRST'} {personalInfo.lastName || 'LAST'}
+                </h1>
+                {personalInfo.jobTitle && <div className="text-xl italic text-gray-700 font-serif mb-3">{personalInfo.jobTitle}</div>}
+                <div className="flex justify-center flex-wrap gap-x-4 text-xs font-sans text-gray-600 uppercase tracking-widest">
+                    {personalInfo.email && <span>{personalInfo.email}</span>}
+                    {personalInfo.phone && <span>| {personalInfo.phone}</span>}
+                    {personalInfo.address && <span>| {personalInfo.address}</span>}
+                </div>
+            </div>
+            {personalInfo.summary && <div><h2 className="text-lg font-bold uppercase tracking-widest text-black border-b border-gray-300 pb-2 mb-3 text-center">Summary</h2><p className="text-sm leading-relaxed whitespace-pre-wrap text-justify">{personalInfo.summary}</p></div>}
+            {experience.length > 0 && <div><h2 className="text-lg font-bold uppercase tracking-widest text-black border-b border-gray-300 pb-2 mb-4 text-center">Professional Experience</h2><div className="space-y-6">{experience.map(exp => (<div key={exp.id}><div className="flex justify-between items-baseline mb-1"><span className="font-bold text-black text-base">{exp.company}</span><span className="text-sm font-sans font-medium text-gray-600">{exp.startDate}{exp.endDate ? ` – ${exp.endDate}` : ''}</span></div><div className="text-sm italic text-gray-800 mb-2">{exp.position}</div><div className="text-sm leading-relaxed whitespace-pre-wrap">{exp.description}</div></div>))}</div></div>}
+            {education.length > 0 && <div><h2 className="text-lg font-bold uppercase tracking-widest text-black border-b border-gray-300 pb-2 mb-4 text-center">Education</h2><div className="space-y-4">{education.map(edu => (<div key={edu.id}><div className="flex justify-between items-baseline mb-1"><span className="font-bold text-black text-base">{edu.school}</span><span className="text-sm font-sans font-medium text-gray-600">{edu.startDate}{edu.endDate ? ` – ${edu.endDate}` : ''}</span></div><div className="text-sm italic text-gray-800">{edu.degree}</div></div>))}</div></div>}
+            {skills.length > 0 && <div><h2 className="text-lg font-bold uppercase tracking-widest text-black border-b border-gray-300 pb-2 mb-3 text-center">Skills</h2><div className="text-sm text-center leading-relaxed">{skills.map(s => s.name).join(' • ')}</div></div>}
+            {projects.length > 0 && <div><h2 className="text-lg font-bold uppercase tracking-widest text-black border-b border-gray-300 pb-2 mb-4 text-center">Projects</h2><div className="space-y-5">{projects.map(proj => (<div key={proj.id}><div className="font-bold text-black text-base mb-1">{proj.title}</div>{proj.link && <a href={proj.link} className="text-xs font-sans text-gray-500 hover:text-black hover:underline block mb-2">{proj.link}</a>}<div className="text-sm leading-relaxed whitespace-pre-wrap">{proj.description}</div></div>))}</div></div>}
+            {certifications.length > 0 && <div><h2 className="text-lg font-bold uppercase tracking-widest text-black border-b border-gray-300 pb-2 mb-3 text-center">Certifications</h2><div className="space-y-2">{certifications.map(c => (<div key={c.id} className="flex justify-between text-sm"><span className="font-bold text-black">{c.name}{c.issuer ? <span className="font-normal italic text-gray-700"> — {c.issuer}</span> : ''}</span><span className="font-sans text-gray-600">{c.date}</span></div>))}</div></div>}
+            {achievements.length > 0 && <div><h2 className="text-lg font-bold uppercase tracking-widest text-black border-b border-gray-300 pb-2 mb-4 text-center">Achievements</h2><div className="space-y-3">{achievements.map(a => (<div key={a.id}><div className="font-bold text-black mb-1">{a.title}</div><div className="text-sm leading-relaxed whitespace-pre-wrap">{a.description}</div></div>))}</div></div>}
+            {languages.length > 0 && <div><h2 className="text-lg font-bold uppercase tracking-widest text-black border-b border-gray-300 pb-2 mb-3 text-center">Languages</h2><div className="text-sm text-center leading-relaxed">{languages.map(l => `${l.language} (${l.proficiency})`).join(' • ')}</div></div>}
+            {links.length > 0 && <div><h2 className="text-lg font-bold uppercase tracking-widest text-black border-b border-gray-300 pb-2 mb-3 text-center">Links</h2><div className="flex flex-wrap justify-center gap-6">{links.map(l => (<a key={l.id} href={l.url} className="text-sm font-sans font-medium text-gray-700 hover:text-black uppercase tracking-wider transition-colors">{l.label}: {l.url}</a>))}</div></div>}
+        </div>
+    );
+};
+
 export function ResumePreview({ data, template = "modern", updateData }: ResumePreviewProps) {
 
     const { personalInfo } = data
@@ -734,9 +823,9 @@ export function ResumePreview({ data, template = "modern", updateData }: ResumeP
             } else {
                 throw new Error(result.error || "AI optimization protocol failed. Please verify your connection.");
             }
-        } catch (error: any) {
+        } catch (error) {
             console.error("Optimization failed:", error);
-            alert(error.message || "Failed to optimize resume content.");
+            alert((error as Error)?.message || "Failed to optimize resume content.");
         } finally {
             setIsOptimizing(false)
         }
@@ -757,7 +846,6 @@ export function ResumePreview({ data, template = "modern", updateData }: ResumeP
             let jsPDF;
             try {
                 const jspdfModule = await import("jspdf");
-                // @ts-ignore
                 jsPDF = jspdfModule.jsPDF || jspdfModule.default || jspdfModule;
             } catch (e) {
                 throw new Error("Failed to load jspdf library.");
@@ -807,7 +895,7 @@ export function ResumePreview({ data, template = "modern", updateData }: ResumeP
                             ];
 
                             colorProperties.forEach((prop) => {
-                                // @ts-ignore - style[prop] is valid but TS is restrictive here
+                                // @ts-expect-error - style[prop] is valid but TS is restrictive here
                                 const val = style[prop];
                                 if (val && typeof val === "string" && unsupportedColorRegex.test(val)) {
                                     const sanitizedVal = val.replace(unsupportedColorRegex, "rgb(0, 0, 0)");
@@ -861,7 +949,7 @@ export function ResumePreview({ data, template = "modern", updateData }: ResumeP
 
         } catch (error) {
             console.error("PDF generation failed:", error);
-            // @ts-ignore
+            // @ts-expect-error - alert expects string, error might be any/unknown
             alert(`Download failed: ${error.message || error}`);
         } finally {
             setIsDownloading(false);
@@ -875,6 +963,12 @@ export function ResumePreview({ data, template = "modern", updateData }: ResumeP
                 return <CorporateTemplate data={data} />;
             case "creative":
                 return <CreativeTemplate data={data} />;
+            case "executive-professional":
+                return <ExecutiveProfessionalTemplate data={data} />;
+            case "modern-tech":
+                return <ModernTechTemplate data={data} />;
+            case "elegant-serif":
+                return <ElegantSerifTemplate data={data} />;
             case "white-modern-business":
                 return <WhiteModernBusinessTemplate data={data} />;
             case "gray-marketing":
@@ -896,6 +990,14 @@ export function ResumePreview({ data, template = "modern", updateData }: ResumeP
     return (
         <div className="flex flex-col h-full bg-zinc-100 dark:bg-zinc-900 border relative">
             <div className="absolute top-4 right-4 z-10 hidden lg:flex gap-2">
+                <Button variant="outline" onClick={handleOptimize} size="sm" className="shadow-md border-primary/50 text-primary hover:bg-primary/10" disabled={isOptimizing}>
+                    {isOptimizing ? (
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    ) : (
+                        <Wand2 className="h-4 w-4 mr-2" />
+                    )}
+                    {isOptimizing ? "Optimizing..." : "AI Optimize"}
+                </Button>
                 <Button onClick={downloadPdf} size="sm" className="shadow-md" disabled={isDownloading}>
                     {isDownloading ? (
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -919,6 +1021,14 @@ export function ResumePreview({ data, template = "modern", updateData }: ResumeP
             </div>
 
             <div className="lg:hidden p-4 border-t bg-background flex flex-col gap-2">
+                <Button variant="outline" onClick={handleOptimize} className="w-full border-primary/50 text-primary" disabled={isOptimizing}>
+                    {isOptimizing ? (
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    ) : (
+                        <Wand2 className="h-4 w-4 mr-2" />
+                    )}
+                    {isOptimizing ? "Optimizing..." : "Magic AI Optimize"}
+                </Button>
                 <Button onClick={downloadPdf} className="w-full" disabled={isDownloading}>
                     {isDownloading ? (
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />

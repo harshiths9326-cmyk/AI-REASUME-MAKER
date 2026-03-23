@@ -44,7 +44,7 @@ export default function BulletGenerator() {
                 })
             })
 
-            let data: any
+            let data: { text?: string; error?: string }
             try {
                 data = await response.json()
             } catch (e) {
@@ -67,9 +67,9 @@ export default function BulletGenerator() {
             } else {
                 throw new Error(data?.error || "Failed to generate bullet points. Please check your API key.")
             }
-        } catch (error: any) {
+        } catch (error) {
             console.error("Failed to generate bullets:", error)
-            setErrorMsg(error?.message || "An unexpected error occurred. Please try again.")
+            setErrorMsg((error as Error)?.message || "An unexpected error occurred. Please try again.")
         } finally {
             setIsGenerating(false)
         }

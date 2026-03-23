@@ -87,7 +87,7 @@ export function ATSMatcher({ resumeData, updateData }: ATSMatcherProps) {
                     <h3 className="text-lg font-bold">ATS Matcher</h3>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                    Paste the job description you're applying for to see how well your resume matches.
+                    Paste the job description you&apos;re applying for to see how well your resume matches.
                 </p>
                 <Textarea
                     placeholder="Paste job description here..."

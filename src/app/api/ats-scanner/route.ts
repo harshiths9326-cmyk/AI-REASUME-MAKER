@@ -31,7 +31,7 @@ export async function POST(req: Request) {
         `
 
         const response = await openai.chat.completions.create({
-            model: "google/gemini-2.0-pro-exp-02-05:free",
+            model: "openrouter/auto",
             messages: [
                 { role: "system", content: systemPrompt },
                 { role: "user", content: userPrompt },
@@ -42,8 +42,8 @@ export async function POST(req: Request) {
 
         const result = JSON.parse(response.choices[0]?.message?.content || "{}")
         return NextResponse.json(result)
-    } catch (error: any) {
+    } catch (error) {
         console.error("ATS Scanner API Error:", error)
-        return NextResponse.json({ error: error.message || "Failed to analyze resume" }, { status: 500 })
+        return NextResponse.json({ error: (error as Error).message || "Failed to analyze resume" }, { status: 500 })
     }
 }

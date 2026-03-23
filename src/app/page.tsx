@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link";
-import { ArrowRight, Bot, FileText, Download, CheckCircle2, Lock } from "lucide-react";
+import { ArrowRight, Bot, FileText, Download, CheckCircle2, Lock, Target, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { motion } from "framer-motion";
@@ -18,8 +18,10 @@ export default function Home() {
   useEffect(() => {
     const user = sessionStorage.getItem("ai_resume_user");
     if (user) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsLoggedIn(true);
     } else {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsLoggedIn(false);
     }
 
@@ -130,6 +132,20 @@ export default function Home() {
                 desc: "Fill in your details with an intuitive structured editor and see your resume come alive in real-time.",
                 href: "/builder",
                 cta: "Open Builder",
+              },
+              {
+                icon: Target,
+                title: "ATS Bypass Protocol",
+                desc: "Analyze your resume against job descriptions using advanced neural scanning to ensure maximum compatibility.",
+                href: "/tools/ats-scanner",
+                cta: "Initiate Scan",
+              },
+              {
+                icon: Zap,
+                title: "Neural Content Generator",
+                desc: "Transform raw job points into high-impact, measurable achievements using established strategic formulas.",
+                href: "/tools/bullet-generator",
+                cta: "Execute Generator",
               },
             ].map((feature, idx) => {
               const isLocked = !isLoggedIn;

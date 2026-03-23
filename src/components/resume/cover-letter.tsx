@@ -59,9 +59,9 @@ ${JSON.stringify({
             } else {
                 throw new Error(data.error || "AI generation protocol failed. Please verify your connection or try again later.");
             }
-        } catch (error: any) {
+        } catch (error) {
             console.error("Cover Letter error:", error)
-            alert(`AI Error: ${error?.message || "Failed to generate cover letter. Please try again."}`)
+            alert(`AI Error: ${(error as Error)?.message || "Failed to generate cover letter. Please try again."}`)
         } finally {
             setIsGenerating(false)
         }
@@ -82,7 +82,7 @@ ${JSON.stringify({
                     <h3 className="text-lg font-bold">AI Cover Letter</h3>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                    Paste the job description you're applying for, and our AI will write a highly tailored cover letter based on your resume data.
+                    Paste the job description you&apos;re applying for, and our AI will write a highly tailored cover letter based on your resume data.
                 </p>
                 <Textarea
                     placeholder="Paste job description here..."

@@ -120,7 +120,7 @@ export function Projects({ data, updateData }: ProjectsProps) {
                                     className={project.title.length >= 100 ? "border-destructive focus-visible:ring-destructive" : ""}
                                 />
                                 <p className="text-[10px] text-muted-foreground leading-tight">
-                                    Lowercase, max 100 chars. Allowed: a-z, 0-9, ., _, -. No "---".
+                                    Lowercase, max 100 chars. Allowed: a-z, 0-9, ., _, -. No &quot;---&quot;.
                                 </p>
                             </div>
                             <div className="space-y-2">

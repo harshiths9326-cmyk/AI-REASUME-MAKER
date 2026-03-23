@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Save, Loader2, CheckCircle2 } from "lucide-react"
+import { Save, Loader2, CheckCircle2, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { PersonalInfo } from "./personal-info"
 import { Experience } from "./experience"
@@ -17,9 +17,10 @@ import { ResumeData } from "@/lib/types"
 interface ResumeFormProps {
     data: ResumeData
     updateData: (newData: Partial<ResumeData>) => void
+    onAiClick?: () => void
 }
 
-export function ResumeForm({ data, updateData }: ResumeFormProps) {
+export function ResumeForm({ data, updateData, onAiClick }: ResumeFormProps) {
     const [isSaving, setIsSaving] = useState(false)
     const [savedStatus, setSavedStatus] = useState<"idle" | "saved" | string>("idle")
 
@@ -50,9 +51,9 @@ export function ResumeForm({ data, updateData }: ResumeFormProps) {
                 setSavedStatus(result.error || "error")
                 console.error("Save error:", result.error)
             }
-        } catch (error: any) {
+        } catch (error) {
             console.error("Error saving resume:", error)
-            setSavedStatus(error?.message || "error")
+            setSavedStatus((error as Error)?.message || "error")
         } finally {
             setIsSaving(false)
         }
@@ -78,6 +79,17 @@ export function ResumeForm({ data, updateData }: ResumeFormProps) {
                     )}
                     {savedStatus === "saved" ? "Saved!" : "Save Progress"}
                 </Button>
+                {onAiClick && (
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={onAiClick}
+                        className="border-primary/50 text-primary hover:bg-primary/10 font-bold uppercase tracking-tighter"
+                    >
+                        <Sparkles className="h-4 w-4 mr-2" />
+                        Magic Tools
+                    </Button>
+                )}
             </div>
 
             {savedStatus !== "idle" && savedStatus !== "saved" && (
@@ -90,55 +102,55 @@ export function ResumeForm({ data, updateData }: ResumeFormProps) {
                 <PersonalInfo
                     data={data.personalInfo}
                     fullData={data}
-                    updateData={(info: any) => updateData({ personalInfo: info })}
+                    updateData={(info: ResumeData["personalInfo"]) => updateData({ personalInfo: info })}
                 />
                 <hr className="my-8" />
 
                 <Experience
                     data={data.experience}
-                    updateData={(exp: any) => updateData({ experience: exp })}
+                    updateData={(exp: ResumeData["experience"]) => updateData({ experience: exp })}
                 />
                 <hr className="my-8" />
 
                 <Education
                     data={data.education}
-                    updateData={(edu: any) => updateData({ education: edu })}
+                    updateData={(edu: ResumeData["education"]) => updateData({ education: edu })}
                 />
                 <hr className="my-8" />
 
                 <Skills
                     data={data.skills}
-                    updateData={(skills: any) => updateData({ skills })}
+                    updateData={(skills: ResumeData["skills"]) => updateData({ skills })}
                 />
                 <hr className="my-8" />
 
                 <Projects
                     data={data.projects}
-                    updateData={(projects: any) => updateData({ projects })}
+                    updateData={(projects: ResumeData["projects"]) => updateData({ projects })}
                 />
                 <hr className="my-8" />
 
                 <Certifications
                     data={data.certifications}
-                    updateData={(certifications: any) => updateData({ certifications })}
+                    updateData={(certifications: ResumeData["certifications"]) => updateData({ certifications })}
                 />
                 <hr className="my-8" />
 
                 <Achievements
                     data={data.achievements}
-                    updateData={(achievements: any) => updateData({ achievements })}
+                    updateData={(achievements: ResumeData["achievements"]) => updateData({ achievements })}
                 />
                 <hr className="my-8" />
 
                 <Languages
                     data={data.languages}
-                    updateData={(languages: any) => updateData({ languages })}
+                    updateData={(languages: ResumeData["languages"]) => updateData({ languages })}
                 />
                 <hr className="my-8" />
 
                 <Links
                     data={data.links}
-                    updateData={(links: any) => updateData({ links })}
+                    updateData={(links: ResumeData["links"]) => updateData({ links })}
                 />
             </div>
         </div>

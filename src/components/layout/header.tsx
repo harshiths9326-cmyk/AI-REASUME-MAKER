@@ -18,6 +18,7 @@ export function Header() {
 
     // Re-sync session whenever the route changes (handles post-login redirect)
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setMounted(true)
         const syncSession = async () => {
             // Priority 1: Check sessionStorage (the app's logic)

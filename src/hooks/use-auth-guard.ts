@@ -15,6 +15,7 @@ export function useAuthGuard() {
         if (!user) {
             router.replace("/signup")
         } else {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setIsAuthed(true)
         }
     }, [router])

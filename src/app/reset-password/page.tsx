@@ -43,8 +43,8 @@ export default function ResetPasswordPage() {
             setTimeout(() => {
                 router.push("/login");
             }, 3000);
-        } catch (err: any) {
-            setError(err?.message || "Failed to update password. Please try again.");
+        } catch (err) {
+            setError((err as Error)?.message || "Failed to update password. Please try again.");
             setIsLoading(false);
         }
     };

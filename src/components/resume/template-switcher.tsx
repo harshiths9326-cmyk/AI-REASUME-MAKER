@@ -12,6 +12,21 @@ const templates = [
         image: "/templates/modern.png",
     },
     {
+        id: "executive-professional",
+        name: "Executive Professional",
+        image: "/templates/professional.png",
+    },
+    {
+        id: "modern-tech",
+        name: "Modern Tech",
+        image: "/templates/business.png",
+    },
+    {
+        id: "elegant-serif",
+        name: "Elegant Serif",
+        image: "/templates/beige.png",
+    },
+    {
         id: "corporate",
         name: "Corporate Standard",
         image: "/templates/corporate.png",

@@ -73,10 +73,12 @@ export default function LoginPage() {
 
                 router.push("/templates");
             }
-        } catch (err: any) {
-            const message = err?.message || "Failed to login. Please try again.";
+        } catch (err) {
+            const message = (err as Error)?.message || "Failed to login. Please try again.";
             if (message.toLowerCase().includes("invalid login credentials")) {
                 setFieldErrors({ password: "The password you entered is incorrect" });
+            } else if (message.toLowerCase().includes("email not confirmed")) {
+                setError("Your email address has not been confirmed yet. Please check your inbox for a confirmation link or disable email confirmation in your Supabase Dashboard (Authentication -> Settings -> Email Auth).");
             } else if (message.toLowerCase().includes("rate limit exceeded")) {
                 setError("Too many login attempts. Please wait a few minutes before trying again or use Google Sign-In.");
             } else {
@@ -97,8 +99,8 @@ export default function LoginPage() {
                 },
             });
             if (authError) throw authError;
-        } catch (err: any) {
-            const msg = err?.message || "";
+        } catch (err) {
+            const msg = (err as Error)?.message || "";
             if (msg.toLowerCase().includes("provider is not enabled")) {
                 setError("Google Sign-In is not yet enabled in your Supabase project. Please enable it in the Supabase Dashboard -> Authentication -> Providers.");
             } else {
@@ -238,7 +240,7 @@ export default function LoginPage() {
                 </CardContent>
                 <CardFooter className="flex flex-col space-y-4 text-center border-t p-6 mt-2">
                     <div className="text-sm text-muted-foreground">
-                        Don't have an account?{" "}
+                        Don&apos;t have an account?{" "}
                         <Link href="/signup" className="font-semibold text-primary hover:underline">
                             Sign up
                         </Link>

@@ -32,7 +32,7 @@ export function ResumeReviewer({ resumeData }: ResumeReviewerProps) {
                 body: JSON.stringify({ resumeData }),
             })
 
-            let data: any
+            let data: { text?: string; error?: string; model?: string }
             try {
                 data = await response.json()
             } catch (e) {
@@ -45,9 +45,9 @@ export function ResumeReviewer({ resumeData }: ResumeReviewerProps) {
             } else {
                 throw new Error(data.error || "AI generation failed. Please check your API key and try again.")
             }
-        } catch (error: any) {
+        } catch (error) {
             console.error("[ResumeReviewer] Error:", error)
-            setErrorMsg(error?.message || "An unexpected error occurred. Please try again.")
+            setErrorMsg((error as Error)?.message || "An unexpected error occurred. Please try again.")
         } finally {
             setIsGenerating(false)
         }

@@ -58,9 +58,9 @@ ${JSON.stringify({
             } else {
                 throw new Error(data.error || "AI generation protocol failed. Please verify your connection or try again later.");
             }
-        } catch (error: any) {
+        } catch (error) {
             console.error("Interview Prep error:", error)
-            alert(`AI Error: ${error?.message || "Failed to generate interview questions. Please try again."}`)
+            alert(`AI Error: ${(error as Error)?.message || "Failed to generate interview questions. Please try again."}`)
         } finally {
             setIsGenerating(false)
         }

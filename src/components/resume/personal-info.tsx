@@ -39,7 +39,7 @@ export function PersonalInfo({ data, fullData, updateData }: PersonalInfoProps) 
 
         const promptContext = `
             Name: ${data.firstName} ${data.lastName}
-            Current Role/Target: ${data.summary || "Professional"}
+            Current Role/Target: ${data.jobTitle || data.summary || "Professional"}
             Background: ${data.summary}
             ${contextAddition}
         `.trim();
@@ -93,6 +93,16 @@ export function PersonalInfo({ data, fullData, updateData }: PersonalInfoProps) 
                         name="lastName"
                         placeholder="Doe"
                         value={data.lastName}
+                        onChange={handleChange}
+                    />
+                </div>
+                <div className="space-y-2 lg:col-span-2">
+                    <Label htmlFor="jobTitle">Job Title / Role</Label>
+                    <Input
+                        id="jobTitle"
+                        name="jobTitle"
+                        placeholder="e.g. Senior Software Engineer"
+                        value={data.jobTitle || ""}
                         onChange={handleChange}
                     />
                 </div>

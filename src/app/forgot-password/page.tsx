@@ -33,8 +33,8 @@ export default function ForgotPasswordPage() {
             if (resetError) throw resetError;
 
             setIsSent(true);
-        } catch (err: any) {
-            const message = err?.message || "Failed to send reset email. Please try again.";
+        } catch (err) {
+            const message = (err as Error)?.message || "Failed to send reset email. Please try again.";
             if (message.toLowerCase().includes("rate limit exceeded")) {
                 setError("Too many requests. Please wait a few minutes.");
             } else {

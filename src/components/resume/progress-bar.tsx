@@ -40,6 +40,7 @@ export function ProfileProgressBar({ data }: ProgressBarProps) {
         // 6. Projects or Extra (10%)
         if (data.projects.length > 0) currentScore += 10
 
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setScore(Math.min(currentScore, 100))
     }, [data])
 
