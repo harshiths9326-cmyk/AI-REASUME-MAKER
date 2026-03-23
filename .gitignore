@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+.env.local
+verify-key.js
+lint_output.txt
+lint_output_new.txt
