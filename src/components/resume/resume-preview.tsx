@@ -4,6 +4,7 @@ import { useRef, useState } from "react"
 import { Download, Loader2, Sparkles, Wand2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ResumeData } from "@/lib/types"
+import { useReactToPrint } from "react-to-print"
 
 interface ResumePreviewProps {
     data: ResumeData
@@ -831,129 +832,18 @@ export function ResumePreview({ data, template = "modern", updateData }: ResumeP
         }
     }
 
-    const downloadPdf = async () => {
-        if (!targetRef.current) return;
+    const handlePrint = useReactToPrint({
+        contentRef: targetRef,
+        documentTitle: `${personalInfo.firstName || "resume"}_${personalInfo.lastName || "document"}`,
+        onAfterPrint: () => setIsDownloading(false),
+    });
+
+    const downloadPdf = () => {
         setIsDownloading(true);
-
-        try {
-            let html2canvas;
-            try {
-                html2canvas = (await import("html2canvas")).default;
-            } catch (e) {
-                throw new Error("Failed to load html2canvas library.");
-            }
-
-            let jsPDF;
-            try {
-                const jspdfModule = await import("jspdf");
-                jsPDF = jspdfModule.jsPDF || jspdfModule.default || jspdfModule;
-            } catch (e) {
-                throw new Error("Failed to load jspdf library.");
-            }
-
-            const element = targetRef.current;
-
-            // Backup styles to ensure clean screenshot
-            const prevBackground = element.style.backgroundColor;
-            element.style.backgroundColor = "#ffffff";
-
-            const canvas = await html2canvas(element, {
-                scale: 2, // High resolution
-                useCORS: true,
-                backgroundColor: "#ffffff",
-                logging: false,
-                windowWidth: element.scrollWidth,
-                windowHeight: element.scrollHeight,
-                onclone: (clonedDoc) => {
-                    // 1. Aggressive Stylesheet Sanitization
-                    // Iterate through all style tags and replace unsupported color functions via regex
-                    const styleTags = clonedDoc.querySelectorAll("style");
-                    styleTags.forEach((styleTag) => {
-                        if (styleTag.textContent) {
-                            // Regex to find lab(), oklch(), oklab(), color-mix() and replace with rgb(0,0,0)
-                            // This catch-all helps when html2canvas parses the stylesheets
-                            const unsupportedColorRegex = /(oklab|lab|oklch|lch|color-mix|hwb)\([^)]+\)/g;
-                            styleTag.textContent = styleTag.textContent.replace(unsupportedColorRegex, "rgb(0, 0, 0)");
-                        }
-                    });
-
-                    // 2. Comprehensive Element Property Sanitization
-                    const elements = clonedDoc.querySelectorAll("*");
-                    elements.forEach((el) => {
-                        if (el instanceof HTMLElement || el instanceof SVGElement) {
-                            const style = window.getComputedStyle(el);
-
-                            // Regex for detecting unsupported colors within property values
-                            const unsupportedColorRegex = /(oklab|lab|oklch|lch|color-mix|hwb)\([^)]+\)/g;
-
-                            // List of properties prone to containing colors
-                            const colorProperties = [
-                                "color", "backgroundColor", "borderColor", "borderTopColor",
-                                "borderRightColor", "borderBottomColor", "borderLeftColor",
-                                "fill", "stroke", "boxShadow", "textShadow", "outlineColor",
-                                "stopColor", "floodColor", "lightingColor"
-                            ];
-
-                            colorProperties.forEach((prop) => {
-                                // @ts-expect-error - style[prop] is valid but TS is restrictive here
-                                const val = style[prop];
-                                if (val && typeof val === "string" && unsupportedColorRegex.test(val)) {
-                                    const sanitizedVal = val.replace(unsupportedColorRegex, "rgb(0, 0, 0)");
-                                    // Use setProperty with !important to ensure override
-                                    const cssProp = prop.replace(/([A-Z])/g, "-$1").toLowerCase();
-                                    el.style.setProperty(cssProp, sanitizedVal, "important");
-                                }
-                            });
-                        }
-                    });
-                }
-            });
-
-            // Restore styles
-            element.style.backgroundColor = prevBackground;
-
-            const imgData = canvas.toDataURL("image/jpeg", 0.98);
-
-            // Create standard A4 PDF (210mm x 297mm)
-            const pdf = new jsPDF({
-                orientation: "portrait",
-                unit: "mm",
-                format: "a4",
-            });
-
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = pdf.internal.pageSize.getHeight();
-
-            // Calculate ratio to scale image down
-            const imgWidth = canvas.width;
-            const imgHeight = canvas.height;
-            const imgRatio = imgWidth / imgHeight;
-
-            let finalWidth = pdfWidth;
-            let finalHeight = finalWidth / imgRatio;
-
-            // OVERRIDE: If the scaled height is taller than 1 page, shrink it further!
-            // This guarantees it prints on exactly ONE page.
-            if (finalHeight > pdfHeight) {
-                finalHeight = pdfHeight;
-                finalWidth = finalHeight * imgRatio;
-            }
-
-            // Center image horizontally if it was squeezed
-            const xOffset = (pdfWidth - finalWidth) / 2;
-
-            pdf.addImage(imgData, "JPEG", xOffset, 0, finalWidth, finalHeight);
-
-            const filename = `${personalInfo.firstName || "resume"}_${personalInfo.lastName || "document"}.pdf`;
-            pdf.save(filename);
-
-        } catch (error) {
-            console.error("PDF generation failed:", error);
-            // @ts-expect-error - alert expects string, error might be any/unknown
-            alert(`Download failed: ${error.message || error}`);
-        } finally {
-            setIsDownloading(false);
-        }
+        // Small timeout to allow the downloading state to render if needed
+        setTimeout(() => {
+            handlePrint();
+        }, 100);
     };
 
     const renderTemplate = () => {
