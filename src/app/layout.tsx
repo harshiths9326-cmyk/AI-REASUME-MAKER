@@ -17,8 +17,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AI Resume Maker",
-  description: "AI-powered modern resume builder",
+  title: "Professional Resume Maker",
+  description: "Modern resume builder for professionals",
 };
 
 export default function RootLayout({

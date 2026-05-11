@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef, useState } from "react"
-import { Download, Loader2, Sparkles, Wand2 } from "lucide-react"
+import { Download, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ResumeData } from "@/lib/types"
 import { useReactToPrint } from "react-to-print"
@@ -792,45 +792,7 @@ export function ResumePreview({ data, template = "modern", updateData }: ResumeP
     const { personalInfo } = data
     const targetRef = useRef<HTMLDivElement>(null)
     const [isDownloading, setIsDownloading] = useState(false)
-    const [isOptimizing, setIsOptimizing] = useState(false)
 
-    const handleOptimize = async () => {
-        if (!updateData) return
-        setIsOptimizing(true)
-        try {
-            const response = await fetch("/api/generate", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    prompt: JSON.stringify(data),
-                    type: "resume-optimizer"
-                })
-            })
-
-            let result;
-            try {
-                result = await response.json();
-            } catch (e) {
-                throw new Error("Invalid server response. Please ensure your AI API key is configured correctly.");
-            }
-
-            if (response.ok && result.text) {
-                try {
-                    const optimizedData = JSON.parse(result.text);
-                    updateData(optimizedData);
-                } catch (e) {
-                    throw new Error("AI generated an invalid data structure. Please try again.");
-                }
-            } else {
-                throw new Error(result.error || "AI optimization protocol failed. Please verify your connection.");
-            }
-        } catch (error) {
-            console.error("Optimization failed:", error);
-            alert((error as Error)?.message || "Failed to optimize resume content.");
-        } finally {
-            setIsOptimizing(false)
-        }
-    }
 
     const handlePrint = useReactToPrint({
         contentRef: targetRef,
@@ -880,14 +842,6 @@ export function ResumePreview({ data, template = "modern", updateData }: ResumeP
     return (
         <div className="flex flex-col h-full bg-zinc-100 dark:bg-zinc-900 border relative">
             <div className="absolute top-4 right-4 z-10 hidden lg:flex gap-2">
-                <Button variant="outline" onClick={handleOptimize} size="sm" className="shadow-md border-primary/50 text-primary hover:bg-primary/10" disabled={isOptimizing}>
-                    {isOptimizing ? (
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    ) : (
-                        <Wand2 className="h-4 w-4 mr-2" />
-                    )}
-                    {isOptimizing ? "Optimizing..." : "AI Optimize"}
-                </Button>
                 <Button onClick={downloadPdf} size="sm" className="shadow-md" disabled={isDownloading}>
                     {isDownloading ? (
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -911,14 +865,6 @@ export function ResumePreview({ data, template = "modern", updateData }: ResumeP
             </div>
 
             <div className="lg:hidden p-4 border-t bg-background flex flex-col gap-2">
-                <Button variant="outline" onClick={handleOptimize} className="w-full border-primary/50 text-primary" disabled={isOptimizing}>
-                    {isOptimizing ? (
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    ) : (
-                        <Wand2 className="h-4 w-4 mr-2" />
-                    )}
-                    {isOptimizing ? "Optimizing..." : "Magic AI Optimize"}
-                </Button>
                 <Button onClick={downloadPdf} className="w-full" disabled={isDownloading}>
                     {isDownloading ? (
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />

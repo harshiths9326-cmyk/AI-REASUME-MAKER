@@ -11,28 +11,6 @@ import { cn } from "@/lib/utils";
 import { OperationalSequence } from "@/components/home/operational-sequence";
 
 export default function Home() {
-  const router = useRouter();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [returningUser, setReturningUser] = useState(false);
-
-  useEffect(() => {
-    const user = sessionStorage.getItem("ai_resume_user");
-    if (user) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setIsLoggedIn(true);
-    } else {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setIsLoggedIn(false);
-    }
-
-    if (typeof window !== 'undefined') {
-      const isReturning = localStorage.getItem("ai_resume_returning_user") === "true";
-      setReturningUser(isReturning);
-    }
-  }, []);
-
-  const authHref = isLoggedIn ? "/templates" : "/signup";
-
   const fadeIn = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
@@ -68,20 +46,20 @@ export default function Home() {
           >
             <div className="space-y-4 max-w-4xl">
               <div className="inline-block mb-4 px-3 py-1 rounded-full border border-primary/50 bg-primary/10 text-primary text-sm font-semibold tracking-wider uppercase backdrop-blur-sm">
-                Next-Gen Resume AI
+                Next-Gen Resume Builder
               </div>
               <h1 className="text-4xl font-black tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl">
                 ENGINEER YOUR <br className="hidden md:block" />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-purple-400 to-secondary drop-shadow-[0_0_15px_rgba(0,243,255,0.5)]">
-                  FUTURISTIC RESUME
+                  PROFESSIONAL RESUME
                 </span>
               </h1>
               <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl font-mono">
-                Leverage advanced AI algorithms to generate ATS-optimized, high-converting resumes in milliseconds.
+                Leverage professional templates to generate ATS-optimized, high-converting resumes in milliseconds.
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-6 mt-8">
-              <Link href={authHref} passHref>
+              <Link href="/builder" passHref>
                 <Button asChild size="lg" className="px-8 h-14 rounded-none border border-primary bg-primary/20 text-primary hover:bg-primary hover:text-primary-foreground font-bold tracking-widest uppercase transition-all shadow-[0_0_15px_-3px_rgba(0,243,255,0.4)] hover:shadow-[0_0_30px_-5px_rgba(0,243,255,0.8)]">
                   <span>Initialize Builder <ArrowRight className="ml-2 h-5 w-5" /></span>
                 </Button>
@@ -127,52 +105,26 @@ export default function Home() {
                 cta: "Browse Templates",
               },
               {
-                icon: Bot,
-                title: "Smart Form Editor",
-                desc: "Fill in your details with an intuitive structured editor and see your resume come alive in real-time.",
+                icon: Target,
+                title: "ATS Optimization",
+                desc: "Structure your resume to ensure maximum compatibility with Applicant Tracking Systems.",
                 href: "/builder",
                 cta: "Open Builder",
               },
-              {
-                icon: Target,
-                title: "ATS Bypass Protocol",
-                desc: "Analyze your resume against job descriptions using advanced neural scanning to ensure maximum compatibility.",
-                href: "/tools/ats-scanner",
-                cta: "Initiate Scan",
-              },
-              {
-                icon: Zap,
-                title: "Neural Content Generator",
-                desc: "Transform raw job points into high-impact, measurable achievements using established strategic formulas.",
-                href: "/tools/bullet-generator",
-                cta: "Execute Generator",
-              },
             ].map((feature, idx) => {
-              const isLocked = !isLoggedIn;
-              const cardHref = isLocked ? "/signup" : feature.href;
-
               return (
                 <motion.div key={idx} variants={fadeIn}>
-                  <Link href={cardHref} className="group block h-full">
+                  <Link href={feature.href} className="group block h-full">
                     <Card className={cn(
                       "bg-card/40 backdrop-blur-md border border-border/50 hover:border-primary/50 shadow-lg transition-all duration-500 h-full cursor-pointer relative overflow-hidden group",
-                      !isLocked && "hover:shadow-[0_0_30px_-5px_rgba(0,243,255,0.3)]",
-                      isLocked && "grayscale-[0.5] opacity-80"
+                      "hover:shadow-[0_0_30px_-5px_rgba(0,243,255,0.3)]"
                     )}>
                       <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-                      {isLocked && (
-                        <div className="absolute top-4 right-4 z-20">
-                          <div className="bg-background/80 backdrop-blur-sm border border-border/50 p-2 rounded-full shadow-lg">
-                            <Lock className="h-4 w-4 text-muted-foreground" />
-                          </div>
-                        </div>
-                      )}
 
                       <CardHeader className="relative z-10">
                         <feature.icon className={cn(
                           "h-12 w-12 text-primary mb-4 transition-transform duration-500",
-                          !isLocked && "drop-shadow-[0_0_8px_rgba(0,243,255,0.8)] group-hover:scale-110"
+                          "drop-shadow-[0_0_8px_rgba(0,243,255,0.8)] group-hover:scale-110"
                         )} />
                         <CardTitle className="font-bold tracking-wide uppercase flex items-center gap-2">
                           {feature.title}
@@ -181,7 +133,7 @@ export default function Home() {
                       </CardHeader>
                       <CardContent className="relative z-10 mt-auto">
                         <span className="inline-flex items-center gap-2 text-sm font-bold text-primary tracking-widest uppercase group-hover:gap-4 transition-all duration-300">
-                          {isLocked ? (returningUser ? "Sign In to Access" : "Sign Up to Access") : feature.cta} <ArrowRight className="h-4 w-4" />
+                          {feature.cta} <ArrowRight className="h-4 w-4" />
                         </span>
                       </CardContent>
                     </Card>
@@ -191,20 +143,6 @@ export default function Home() {
             })}
           </motion.div>
 
-          {!isLoggedIn && (
-            <motion.div
-              className="mt-16 text-center"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-            >
-              <Link href="/signup">
-                <Button variant="outline" className="border-primary/30 text-primary hover:bg-primary/10 px-8 py-6 h-auto text-lg font-bold tracking-widest uppercase">
-                  {returningUser ? "Sign In to Unlock Pro Tools" : "Sign Up to Unlock Pro Tools"} <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
-            </motion.div>
-          )}
         </div>
       </section>
 
@@ -228,7 +166,7 @@ export default function Home() {
             Join thousands of optimized candidates who bypassed the ATS filters using our platform.
           </p>
           <div className="pt-4">
-            <Link href={authHref} passHref>
+            <Link href="/builder" passHref>
               <Button asChild size="lg" className="px-10 h-16 rounded-none bg-primary text-primary-foreground font-black tracking-widest uppercase transition-all shadow-[0_0_20px_var(--primary)] hover:shadow-[0_0_40px_var(--primary)] hover:scale-105 border border-primary/50">
                 <span>Execute Compilation</span>
               </Button>

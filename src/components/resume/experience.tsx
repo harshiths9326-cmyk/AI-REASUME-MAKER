@@ -1,7 +1,6 @@
 "use client"
 
-import { useState } from "react"
-import { Plus, Trash2, Bot, Loader2 } from "lucide-react"
+import { Plus, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -14,7 +13,6 @@ interface ExperienceProps {
 }
 
 export function Experience({ data, updateData }: ExperienceProps) {
-    const [generatingId, setGeneratingId] = useState<string | null>(null)
 
     const addExperience = () => {
         updateData([
@@ -38,37 +36,6 @@ export function Experience({ data, updateData }: ExperienceProps) {
 
     const removeExperience = (id: string) => {
         updateData(data.filter((item) => item.id !== id))
-    }
-
-    const generateWithAI = async (id: string, currentDescription: string) => {
-        if (!currentDescription.trim()) return
-
-        try {
-            setGeneratingId(id)
-            const response = await fetch("/api/generate", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    prompt: currentDescription,
-                    type: "experience",
-                }),
-            })
-
-            const result = await response.json()
-
-            if (response.ok && result.text) {
-                updateExperience(id, "description", result.text)
-            } else {
-                throw new Error(result.error || "Failed to generate text")
-            }
-        } catch (error) {
-            console.error("Error generating text:", error)
-            alert("Failed to generate text using AI. Please ensure you have configured your OPENROUTER_API_KEY.")
-        } finally {
-            setGeneratingId(null)
-        }
     }
 
     return (
@@ -123,26 +90,9 @@ export function Experience({ data, updateData }: ExperienceProps) {
                                 />
                             </div>
                             <div className="space-y-2 md:col-span-2">
-                                <div className="flex items-center justify-between">
-                                    <Label>Description</Label>
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="h-8 text-primary hover:text-primary/80 hover:bg-primary/10"
-                                        onClick={() => generateWithAI(exp.id, exp.description)}
-                                        disabled={!exp.description.trim() || generatingId === exp.id}
-                                        type="button"
-                                    >
-                                        {generatingId === exp.id ? (
-                                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                        ) : (
-                                            <Bot className="h-4 w-4 mr-2" />
-                                        )}
-                                        Enhance with AI
-                                    </Button>
-                                </div>
+                                <Label>Description</Label>
                                 <Textarea
-                                    placeholder="Describe your responsibilities and achievements. You can write brief notes and use 'Enhance with AI' to generate professional bullet points."
+                                    placeholder="Describe your responsibilities and achievements."
                                     className="min-h-[100px]"
                                     value={exp.description}
                                     onChange={(e) => updateExperience(exp.id, "description", e.target.value)}

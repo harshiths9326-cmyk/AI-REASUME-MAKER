@@ -1,8 +1,5 @@
 "use client"
 
-import { useState } from "react"
-import { Bot, Loader2 } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
@@ -15,61 +12,8 @@ interface PersonalInfoProps {
 }
 
 export function PersonalInfo({ data, fullData, updateData }: PersonalInfoProps) {
-    const [isGenerating, setIsGenerating] = useState(false)
-
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         updateData({ ...data, [e.target.name]: e.target.value })
-    }
-
-    const generateSummary = async () => {
-        let contextAddition = "";
-
-        if (fullData) {
-            if (fullData.experience && fullData.experience.length > 0) {
-                contextAddition += "\nWork Experience:\n" + fullData.experience.map(exp =>
-                    `- ${exp.position} at ${exp.company} (${exp.startDate} to ${exp.endDate}): ${exp.description}`
-                ).join("\n");
-            }
-            if (fullData.education && fullData.education.length > 0) {
-                contextAddition += "\n\nEducation:\n" + fullData.education.map(edu =>
-                    `- ${edu.degree} from ${edu.school}`
-                ).join("\n");
-            }
-        }
-
-        const promptContext = `
-            Name: ${data.firstName} ${data.lastName}
-            Current Role/Target: ${data.jobTitle || data.summary || "Professional"}
-            Background: ${data.summary}
-            ${contextAddition}
-        `.trim();
-
-        try {
-            setIsGenerating(true)
-            const response = await fetch("/api/generate", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    prompt: promptContext,
-                    type: "summary",
-                }),
-            })
-
-            const result = await response.json()
-
-            if (response.ok && result.text) {
-                updateData({ ...data, summary: result.text })
-            } else {
-                throw new Error(result.error || "Failed to generate summary")
-            }
-        } catch (error) {
-            console.error("Error generating summary:", error)
-            alert("Failed to generate summary using AI. Please ensure you have configured your OPENAI_API_KEY.")
-        } finally {
-            setIsGenerating(false)
-        }
     }
 
     return (
@@ -158,28 +102,11 @@ export function PersonalInfo({ data, fullData, updateData }: PersonalInfoProps) 
                     />
                 </div>
                 <div className="space-y-2 lg:col-span-2">
-                    <div className="flex items-center justify-between">
-                        <Label htmlFor="summary">Professional Summary</Label>
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-8 text-primary hover:text-primary/80 hover:bg-primary/10"
-                            onClick={generateSummary}
-                            disabled={isGenerating}
-                            type="button"
-                        >
-                            {isGenerating ? (
-                                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                            ) : (
-                                <Bot className="h-4 w-4 mr-2" />
-                            )}
-                            Generate with AI
-                        </Button>
-                    </div>
+                    <Label htmlFor="summary">Professional Summary</Label>
                     <Textarea
                         id="summary"
                         name="summary"
-                        placeholder="Experienced software engineer with a passion for building scalable web applications. You can write brief notes and use 'Generate with AI'."
+                        placeholder="Experienced software engineer with a passion for building scalable web applications."
                         className="min-h-[100px]"
                         value={data.summary}
                         onChange={handleChange}

@@ -5,12 +5,12 @@ import { ArrowRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { motion } from "framer-motion";
-import { useAuthGuard } from "@/hooks/use-auth-guard"
+
 
 const templates = [
     {
         id: "modern",
-        name: "Modern AI",
+        name: "Modern Professional",
         description: "Clean, ATS-friendly design perfect for tech and creative roles.",
         image: "/templates/modern.png",
         popular: true,
@@ -74,8 +74,6 @@ const templates = [
 ];
 
 export default function TemplatesPage() {
-    const { isAuthed } = useAuthGuard()
-
     const container = {
         hidden: { opacity: 0 },
         show: {
@@ -85,12 +83,6 @@ export default function TemplatesPage() {
             }
         }
     };
-
-    if (!isAuthed) {
-        return <div className="flex justify-center items-center h-[calc(100vh-4rem)]">Checking authentication...</div>
-    }
-
-
     const item = {
         hidden: { opacity: 0, y: 20 },
         show: { opacity: 1, y: 0, transition: { duration: 0.5 } }
@@ -113,7 +105,7 @@ export default function TemplatesPage() {
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.6, delay: 0.2 }}
                 >
-                    Select a starting design for your resume. You can easily export this design to PDF once your content is generated.
+                    Select a starting design for your resume. You can easily export this design to PDF once your content is complete.
                 </motion.p>
             </div>
 
@@ -166,7 +158,7 @@ export default function TemplatesPage() {
                                 </p>
                                 <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
                                     <li className="flex items-center"><Check className="h-4 w-4 mr-2 text-primary" /> ATS Optimized</li>
-                                    <li className="flex items-center"><Check className="h-4 w-4 mr-2 text-primary" /> AI Writing Support</li>
+                                    <li className="flex items-center"><Check className="h-4 w-4 mr-2 text-primary" /> Multi-Page Support</li>
                                 </ul>
                             </CardContent>
                             <CardFooter className="pt-4 border-t bg-muted/20">

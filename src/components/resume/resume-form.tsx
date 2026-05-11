@@ -1,7 +1,5 @@
 "use client"
 
-import { useState } from "react"
-import { Save, Loader2, CheckCircle2, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { PersonalInfo } from "./personal-info"
 import { Experience } from "./experience"
@@ -17,86 +15,15 @@ import { ResumeData } from "@/lib/types"
 interface ResumeFormProps {
     data: ResumeData
     updateData: (newData: Partial<ResumeData>) => void
-    onAiClick?: () => void
 }
 
-export function ResumeForm({ data, updateData, onAiClick }: ResumeFormProps) {
-    const [isSaving, setIsSaving] = useState(false)
-    const [savedStatus, setSavedStatus] = useState<"idle" | "saved" | string>("idle")
-
-    const handleSave = async () => {
-        try {
-            setIsSaving(true)
-            setSavedStatus("idle")
-
-            const resumeId = data.personalInfo.firstName
-                ? `${data.personalInfo.firstName.toLowerCase()}-${data.personalInfo.lastName.toLowerCase()}`
-                : "draft-resume"
-
-            const response = await fetch("/api/save-resume", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id: resumeId, data }),
-            })
-
-            const result = await response.json()
-
-            if (response.ok && result.success) {
-                setSavedStatus("saved")
-                setTimeout(() => setSavedStatus("idle"), 3000)
-            } else if (response.status === 401) {
-                setSavedStatus("Please sign in to save your progress")
-                console.error("Auth error:", result.error)
-            } else {
-                setSavedStatus(result.error || "error")
-                console.error("Save error:", result.error)
-            }
-        } catch (error) {
-            console.error("Error saving resume:", error)
-            setSavedStatus((error as Error)?.message || "error")
-        } finally {
-            setIsSaving(false)
-        }
-    }
-
+export function ResumeForm({ data, updateData }: ResumeFormProps) {
     return (
         <div className="flex flex-col h-full bg-background relative">
             <div className="p-4 border-b font-semibold bg-muted/50 sticky top-0 z-10 shadow-sm flex justify-between items-center">
                 <span>Resume Details</span>
-                <Button
-                    variant={savedStatus === "saved" ? "default" : "outline"}
-                    size="sm"
-                    onClick={handleSave}
-                    disabled={isSaving}
-                    className={savedStatus === "saved" ? "bg-green-600 hover:bg-green-700 text-white" : ""}
-                >
-                    {isSaving ? (
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    ) : savedStatus === "saved" ? (
-                        <CheckCircle2 className="h-4 w-4 mr-2" />
-                    ) : (
-                        <Save className="h-4 w-4 mr-2" />
-                    )}
-                    {savedStatus === "saved" ? "Saved!" : "Save Progress"}
-                </Button>
-                {onAiClick && (
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={onAiClick}
-                        className="border-primary/50 text-primary hover:bg-primary/10 font-bold uppercase tracking-tighter"
-                    >
-                        <Sparkles className="h-4 w-4 mr-2" />
-                        Magic Tools
-                    </Button>
-                )}
             </div>
 
-            {savedStatus !== "idle" && savedStatus !== "saved" && (
-                <div className="p-3 bg-destructive/10 text-destructive text-sm text-center border-b font-medium">
-                    {`Error: ${savedStatus}`}
-                </div>
-            )}
 
             <div className="flex-1 overflow-y-auto p-4 space-y-8 custom-scrollbar pb-24">
                 <PersonalInfo

@@ -1,9 +1,8 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { ArrowRight, Lock } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 import Link from "next/link"
-import { useEffect, useState } from "react"
 import { cn } from "@/lib/utils"
 
 interface Step {
@@ -14,21 +13,13 @@ interface Step {
 }
 
 const steps: Step[] = [
-    { step: "01", title: "Input Data", desc: "Feed raw career endpoints into the system.", href: "/builder" },
-    { step: "02", title: "AI Processing", desc: "Neural networks optimize and expand bullet points.", href: "/tools/bullet-generator" },
-    { step: "03", title: "Manual Override", desc: "Review and calibrate the generated matrix.", href: "/builder" },
-    { step: "04", title: "Compile PDF", desc: "Export final ATS-compliant artifact.", href: "/builder" }
+    { step: "01", title: "Input Data", desc: "Feed your career details into our structured editor.", href: "/builder" },
+    { step: "02", title: "Select Template", desc: "Choose from a curated range of high-impact templates.", href: "/templates" },
+    { step: "03", title: "Review & Edit", desc: "Review and calibrate your resume data in real-time.", href: "/builder" },
+    { step: "04", title: "Compile PDF", desc: "Export your final ATS-compliant document.", href: "/builder" }
 ]
 
 export function OperationalSequence() {
-    const [isLoggedIn, setIsLoggedIn] = useState(false)
-
-    useEffect(() => {
-        const user = sessionStorage.getItem("ai_resume_user")
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setIsLoggedIn(!!user)
-    }, [])
-
     const fadeIn = {
         hidden: { opacity: 0, y: 20 },
         visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
@@ -61,9 +52,9 @@ export function OperationalSequence() {
                     <div className="inline-block mb-4 px-3 py-1 rounded-full border border-primary/30 bg-primary/5 text-primary text-[10px] font-bold tracking-[0.2em] uppercase backdrop-blur-sm">
                         System Protocol v4.0
                     </div>
-                    <h2 className="text-3xl font-black tracking-tighter uppercase sm:text-4xl text-foreground">Operational Sequence</h2>
+                        <h2 className="text-3xl font-black tracking-tighter uppercase sm:text-4xl text-foreground">Operational Sequence</h2>
                     <p className="mt-4 text-muted-foreground font-mono text-sm max-w-2xl mx-auto">
-                        Execute the following sequence to synchronize your professional data with our neural optimization engine.
+                        Execute the following sequence to synchronize your professional data with our optimization engine.
                     </p>
                 </motion.div>
 
@@ -97,11 +88,10 @@ export function OperationalSequence() {
                     </div>
 
                     {steps.map((item, i) => {
-                        const cardHref = !isLoggedIn ? "/signup" : item.href
                         return (
                             <motion.div key={i} variants={fadeIn} className="relative">
                                 <Link
-                                    href={cardHref}
+                                    href={item.href}
                                     className="flex flex-col items-center md:items-center text-center group cursor-pointer"
                                 >
                                     <div className="relative mb-6">
@@ -140,20 +130,6 @@ export function OperationalSequence() {
                         )
                     })}
                 </motion.div>
-
-                {/* Mobile Unlock Indicator */}
-                {!isLoggedIn && (
-                    <motion.div
-                        className="mt-16 flex justify-center md:hidden"
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        viewport={{ once: true }}
-                    >
-                        <Link href="/signup" className="flex items-center gap-2 px-4 py-2 border border-primary/30 bg-primary/5 rounded font-mono text-[10px] uppercase tracking-widest text-primary animate-pulse">
-                            <Lock className="h-3 w-3" /> System Restricted - Authentication Required
-                        </Link>
-                    </motion.div>
-                )}
             </div>
         </section>
     )
