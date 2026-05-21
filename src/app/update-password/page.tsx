@@ -21,43 +21,36 @@ export default function UpdatePasswordPage() {
     const [hasValidSession, setHasValidSession] = useState(false)
 
     useEffect(() => {
-        const checkSession = async () => {
-            try {
-                const { data: { session } } = await supabase.auth.getSession()
-
+        // Listen for auth state changes (handles recovery token from URL hash)
+        const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+            if (event === "PASSWORD_RECOVERY" || event === "SIGNED_IN") {
                 if (session) {
                     setHasValidSession(true)
-                } else {
-                    // Check if there's a hash with recovery token that hasn't been processed yet
-                    const hash = window.location.hash
-                    if (hash && hash.includes("type=recovery")) {
-                        // Supabase needs a moment to process the hash
-                        // onAuthStateChange will fire once it's processed
-                        const { data } = supabase.auth.onAuthStateChange((event, newSession) => {
-                            if (event === "PASSWORD_RECOVERY" && newSession) {
-                                setHasValidSession(true)
-                            }
-                            if (event === "SIGNED_IN" && newSession) {
-                                setHasValidSession(true)
-                            }
-                            setCheckingSession(false)
-                        })
-
-                        // Fallback: if no auth change within 2 seconds, show invalid
-                        setTimeout(() => {
-                            setCheckingSession(false)
-                            data.subscription.unsubscribe()
-                        }, 3000)
-                        return
-                    }
+                    setCheckingSession(false)
                 }
-            } catch (err) {
-                console.warn("Session check failed:", err)
             }
-            setCheckingSession(false)
+        })
+
+        // Also check if session already exists (in case token was already processed)
+        const checkExistingSession = async () => {
+            const { data: { session } } = await supabase.auth.getSession()
+            if (session) {
+                setHasValidSession(true)
+                setCheckingSession(false)
+            }
         }
 
-        checkSession()
+        checkExistingSession()
+
+        // Timeout: if no session after 3 seconds, show invalid link
+        const timeout = setTimeout(() => {
+            setCheckingSession(false)
+        }, 3000)
+
+        return () => {
+            authListener.subscription.unsubscribe()
+            clearTimeout(timeout)
+        }
     }, [])
 
     const handleUpdatePassword = async (e: React.FormEvent) => {
@@ -83,6 +76,8 @@ export default function UpdatePasswordPage() {
 
             if (error) throw error
 
+            // Sign out after password update so user must login with new password
+            await supabase.auth.signOut()
             setSuccess(true)
         } catch (err) {
             const message = (err as Error).message
