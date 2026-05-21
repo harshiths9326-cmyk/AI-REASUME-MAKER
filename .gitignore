@@ -44,3 +44,4 @@ next-env.d.ts
 verify-key.js
 lint_output.txt
 lint_output_new.txt
+.vercel
