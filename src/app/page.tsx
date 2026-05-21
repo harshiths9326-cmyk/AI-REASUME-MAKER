@@ -1,12 +1,10 @@
 "use client"
 
 import Link from "next/link";
-import { ArrowRight, Bot, FileText, Download, CheckCircle2, Lock, Target, Zap } from "lucide-react";
+import { ArrowRight, Download, FileText, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { OperationalSequence } from "@/components/home/operational-sequence";
 

@@ -18,8 +18,11 @@ export function Education({ data, updateData }: EducationProps) {
             ...data,
             {
                 id: crypto.randomUUID(),
-                school: "",
+                institutionName: "",
+                institutionAddress: "",
+                course: "",
                 degree: "",
+                marks: "",
                 startDate: "",
                 endDate: "",
                 description: "",
@@ -57,33 +60,57 @@ export function Education({ data, updateData }: EducationProps) {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2 md:col-span-2">
-                                <Label>School / University</Label>
+                                <Label>Institution Name</Label>
                                 <Input
-                                    placeholder="University of Examples"
-                                    value={edu.school}
-                                    onChange={(e) => updateEducation(edu.id, "school", e.target.value)}
+                                    placeholder="e.g., Sri Bhagawan Mahaveer Jain College"
+                                    value={edu.institutionName}
+                                    onChange={(e) => updateEducation(edu.id, "institutionName", e.target.value)}
                                 />
                             </div>
                             <div className="space-y-2 md:col-span-2">
-                                <Label>Degree & Major</Label>
+                                <Label>Institution Address</Label>
                                 <Input
-                                    placeholder="BSc in Computer Science"
+                                    placeholder="Bengaluru, Karnataka"
+                                    value={edu.institutionAddress}
+                                    onChange={(e) => updateEducation(edu.id, "institutionAddress", e.target.value)}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Qualification Level</Label>
+                                <Input
+                                    placeholder="e.g., SSLC, PUC, B.Tech, B.Sc"
                                     value={edu.degree}
                                     onChange={(e) => updateEducation(edu.id, "degree", e.target.value)}
                                 />
                             </div>
                             <div className="space-y-2">
+                                <Label>Course / Stream</Label>
+                                <Input
+                                    placeholder="e.g., Science (PCMB), Commerce, Computer Science"
+                                    value={edu.course}
+                                    onChange={(e) => updateEducation(edu.id, "course", e.target.value)}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Marks / Percentage</Label>
+                                <Input
+                                    placeholder="e.g., 92%, 8.5 CGPA"
+                                    value={edu.marks}
+                                    onChange={(e) => updateEducation(edu.id, "marks", e.target.value)}
+                                />
+                            </div>
+                            <div className="space-y-2">
                                 <Label>Start Date</Label>
                                 <Input
-                                    placeholder="Aug 2016"
+                                    placeholder="Jun 2018"
                                     value={edu.startDate}
                                     onChange={(e) => updateEducation(edu.id, "startDate", e.target.value)}
                                 />
                             </div>
                             <div className="space-y-2">
-                                <Label>End Date</Label>
+                                <Label>End Date / Passed Out Year</Label>
                                 <Input
-                                    placeholder="May 2020"
+                                    placeholder="May 2022"
                                     value={edu.endDate}
                                     onChange={(e) => updateEducation(edu.id, "endDate", e.target.value)}
                                 />
@@ -91,7 +118,7 @@ export function Education({ data, updateData }: EducationProps) {
                             <div className="space-y-2 md:col-span-2">
                                 <Label>Additional Info (Optional)</Label>
                                 <Textarea
-                                    placeholder="GPA, Honors, relevant coursework..."
+                                    placeholder="Achievements, extracurricular activities..."
                                     className="min-h-[80px]"
                                     value={edu.description}
                                     onChange={(e) => updateEducation(edu.id, "description", e.target.value)}

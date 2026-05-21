@@ -1,6 +1,5 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
 import { PersonalInfo } from "./personal-info"
 import { Experience } from "./experience"
 import { Education } from "./education"
@@ -28,7 +27,6 @@ export function ResumeForm({ data, updateData }: ResumeFormProps) {
             <div className="flex-1 overflow-y-auto p-4 space-y-8 custom-scrollbar pb-24">
                 <PersonalInfo
                     data={data.personalInfo}
-                    fullData={data}
                     updateData={(info: ResumeData["personalInfo"]) => updateData({ personalInfo: info })}
                 />
                 <hr className="my-8" />

@@ -1,0 +1,202 @@
+# AI RESUME MAKER - COMPREHENSIVE INTERNSHIP REPORT
+
+## 1. FRONT MATTER
+
+### 1.1 ABSTRACT
+The AI Resume Maker is an intelligent, web-based application designed to automate and professionalize the process of resume creation. Developing a high-quality resume is often a hurdle for students and freshers due to formatting complexities and a lack of understanding of industry standards. This project addresses these challenges by providing a user-friendly platform built on Next.js, TypeScript, and Supabase. The system features dynamic template switching, real-time preview, secure cloud storage, and high-fidelity PDF generation. By leveraging a modular architecture and cloud-native services, the application ensures scalability, performance, and accessibility across all devices. This report documents the end-to-end development life cycle, from requirement analysis and system design to implementation and deployment.
+
+### 1.2 PREFACE
+This project was undertaken during my internship at NH Internships. The goal was to build a real-world productivity tool that solves a genuine problem while adhering to professional software engineering standards.
+
+---
+
+# 2. INTRODUCTION & BACKGROUND
+
+## 2.1 OVERVIEW
+In the modern job market, a resume is more than just a list of qualifications; it is a marketing tool that represents a candidate's professional identity. However, the manual creation of resumes remains a tedious task for many. Users often struggle with word processors, alignment issues, and selecting appropriate layouts. The AI Resume Maker aims to solve these pain points by offering a structured, automated approach to resume building.
+
+[IMAGE: landing_page_screenshot_1778698938455.png | Figure 1: The AI Resume Maker Landing Page with Cyberpunk Aesthetics]
+
+## 2.2 PROBLEM DEFINITION
+Traditional methods of resume creation involve using desktop word processors like Microsoft Word. These tools, while powerful, require significant manual effort for formatting. Beginners often face:
+- Inconsistent spacing and alignment.
+- Difficulty in organizing technical projects and certifications.
+- Lack of professional-grade templates.
+- No central place to store and update multiple versions of a resume.
+
+---
+
+# 3. LITERATURE SURVEY
+
+## 3.1 NEXT.JS VS. TRADITIONAL REACT
+React.js has revolutionized web development by introducing a component-based architecture. Next.js, built on top of React, adds critical features like Server-Side Rendering (SSR) and Static Site Generation (SSG).
+
+## 3.2 SUPABASE: THE OPEN SOURCE FIREBASE ALTERNATIVE
+Traditionally, developers had to manage their own servers and databases. Modern BaaS platforms like Supabase provide real-time PostgreSQL database and secure Authentication.
+
+---
+
+# 4. SYSTEM REQUIREMENT ANALYSIS
+
+## 4.1 FUNCTIONAL REQUIREMENTS
+1. User Authentication: Secure login/signup.
+2. Data Persistence: Resumes must be saved and retrievable.
+3. Live Preview: Instant feedback on data entry.
+4. Template Switching: Swap designs without data loss.
+5. PDF Export: High-fidelity generation.
+
+## 4.2 SOFTWARE REQUIREMENT SPECIFICATION (SRS)
+The system must satisfy the following requirements:
+- Functional: User registration, data entry, template selection, preview generation, PDF download.
+- Non-functional: Responsiveness, sub-second latency for preview updates, 99.9% uptime for database connectivity.
+
+---
+
+# 5. SYSTEM DESIGN & ARCHITECTURE
+
+## 5.1 SYSTEM ARCHITECTURE
+The system uses a 3-tier architecture: Presentation (Next.js), Logic (API Routes), and Data (Supabase).
+
+[IMAGE: template_modern_ai_1778698574877.png | Figure 2: The Modern AI Template Interface]
+
+---
+
+# 6. UX DESIGN & TEMPLATE ANALYSIS
+
+## 6.1 MODERN AI TEMPLATE
+Designed for technical roles, focusing on clean lines and bold headers.
+[IMAGE: template_modern_ai_1778698574877.png | Figure 3: Modern AI Template - Minimalist and Impactful]
+
+## 6.2 EXECUTIVE PROFESSIONAL
+A traditional two-column layout optimized for corporate and management positions.
+[IMAGE: template_corporate_professional_1778698667541.png | Figure 4: Executive Professional Template]
+
+## 6.3 MODERN CREATIVE
+Uses a colored sidebar to highlight skills and contact info, perfect for designers.
+[IMAGE: template_modern_creative_1778698741933.png | Figure 5: Modern Creative Template]
+
+## 6.4 MODERN TECH
+A high-contrast dark-themed template for software engineers and developers.
+[IMAGE: template_modern_tech_1778698775717.png | Figure 6: Modern Tech Template]
+
+## 6.5 ELEGANT SERIF
+Uses serif fonts (Merriweather) for a classic, academic look.
+[IMAGE: template_elegant_serif_clean_1778698816640.png | Figure 7: Elegant Serif Template]
+
+## 6.6 BLUE CV
+A simple, professional layout with a blue color accent for headers.
+[IMAGE: template_blue_cv_1778698836388.png | Figure 8: Blue CV Template]
+
+---
+
+# 7. TECHNICAL IMPLEMENTATION
+
+## 7.1 DATABASE SCHEMA
+The database is structured to support relational data for complex resumes.
+```sql
+CREATE TABLE resumes (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES auth.users(id),
+  data JSONB NOT NULL,
+  template_id TEXT DEFAULT 'modern',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+```
+
+## 7.2 API ROUTES (api/save-resume/route.ts)
+```typescript
+export async function POST(req: Request) {
+    const { id, data } = await req.json()
+    const { data: { user } } = await supabase.auth.getUser()
+    const { data: result, error } = await supabase
+        .from('resumes')
+        .upsert({ id, user_id: user.id, data, updated_at: new Date() })
+}
+```
+
+---
+
+# 8. SOFTWARE DEVELOPMENT LIFE CYCLE (SDLC)
+
+## 8.1 AGILE SCRUM METHODOLOGY
+The project followed the Agile Scrum methodology, allowing for iterative development and frequent feedback loops.
+### 8.1.1 SPRINT PLANNING
+- Sprint 1: Architecture setup, Authentication.
+- Sprint 2: Core Form components and State management.
+- Sprint 3: Template design and PDF engine.
+- Sprint 4: Testing and Deployment.
+
+---
+
+# 9. TESTING & QUALITY ASSURANCE
+
+## 9.1 TEST CASE TABLE
+| ID | Feature | Test Scenario | Expected Result | Status |
+|----|---------|---------------|-----------------|--------|
+| TC1 | Auth | Login with valid credentials | User redirected to dashboard | PASS |
+| TC2 | Form | Enter invalid email format | Error message shown | PASS |
+| TC3 | Preview| Change data in form | Preview updates immediately | PASS |
+| TC5 | Print | Click Download button | PDF generated | PASS |
+
+---
+
+# 10. MAINTENANCE & SUPPORT
+
+## 10.1 SYSTEM MONITORING
+We used Vercel Analytics and Supabase Logs to monitor system health and catch performance regressions.
+
+---
+
+# 11. CONCLUSION & FUTURE SCOPE
+
+## 11.1 SUMMARY
+The project successfully meets all its objectives, providing a powerful yet simple tool for job seekers.
+
+## 11.2 FUTURE ENHANCEMENTS
+- AI Resume Score: Analyzing keywords against job descriptions using GPT-4.
+- Auto-Filling: Import data from LinkedIn or existing PDFs.
+
+---
+
+# 12. APPENDICES
+
+## 12.1 SOURCE CODE: MAIN BUILDER (app/builder/page.tsx)
+```tsx
+"use client"
+import { useState, useEffect } from "react"
+import { initialResumeData, ResumeData } from "@/lib/types"
+
+function BuilderContent() {
+    const [data, setData] = useState<ResumeData>(initialResumeData)
+    useEffect(() => {
+        const savedData = sessionStorage.getItem("resume_builder_data")
+        if (savedData) setData(JSON.parse(savedData))
+    }, [])
+
+    const updateData = (newData: Partial<ResumeData>) => {
+        setData((prev) => ({ ...prev, ...newData }))
+    }
+
+    return (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
+            <ResumeForm data={data} updateData={updateData} />
+            <ResumePreview data={data} />
+        </div>
+    )
+}
+```
+
+## 12.2 SOURCE CODE: DATA TYPES (lib/types.ts)
+```typescript
+export interface ResumeData {
+    personalInfo: PersonalInfo;
+    experience: Experience[];
+    education: Education[];
+    skills: Skill[];
+}
+```
+
+## 12.3 BIBLIOGRAPHY
+1. Next.js Documentation. (2024). https://nextjs.org
+2. Supabase Documentation. (2024). https://supabase.com
+3. Tailwind CSS Documentation. (2024). https://tailwindcss.com

@@ -1,0 +1,340 @@
+# AI RESUME MAKER - COMPREHENSIVE INTERNSHIP REPORT
+
+## 1. FRONT MATTER
+
+### 1.1 ABSTRACT
+The AI Resume Maker is an intelligent, web-based application designed to automate and professionalize the process of resume creation. Developing a high-quality resume is often a hurdle for students and freshers due to formatting complexities and a lack of understanding of industry standards. This project addresses these challenges by providing a user-friendly platform built on Next.js, TypeScript, and Supabase. The system features dynamic template switching, real-time preview, secure cloud storage, and high-fidelity PDF generation. By leveraging a modular architecture and cloud-native services, the application ensures scalability, performance, and accessibility across all devices. This report documents the end-to-end development life cycle, from requirement analysis and system design to implementation and deployment.
+
+### 1.2 PREFACE
+This project was undertaken during my internship at NH Internships. The goal was to build a real-world productivity tool that solves a genuine problem while adhering to professional software engineering standards.
+
+---
+
+# 2. INTRODUCTION & BACKGROUND
+
+## 2.1 OVERVIEW
+In the modern job market, a resume is more than just a list of qualifications; it is a marketing tool that represents a candidate's professional identity. However, the manual creation of resumes remains a tedious task for many. Users often struggle with word processors, alignment issues, and selecting appropriate layouts. The AI Resume Maker aims to solve these pain points by offering a structured, automated approach to resume building.
+
+[IMAGE: landing_page_screenshot_1778698938455.png | Figure 1: The AI Resume Maker Landing Page with Cyberpunk Aesthetics]
+
+## 2.2 PROBLEM DEFINITION
+Traditional methods of resume creation involve using desktop word processors like Microsoft Word. These tools, while powerful, require significant manual effort for formatting. Beginners often face:
+- Inconsistent spacing and alignment.
+- Difficulty in organizing technical projects and certifications.
+- Lack of professional-grade templates.
+- No central place to store and update multiple versions of a resume.
+
+## 2.3 PROPOSED SYSTEM
+The proposed system is a full-stack Next.js application that decouples content from presentation. Users enter their data once, and the system handles the rendering into multiple professional styles.
+
+---
+
+# 3. LITERATURE SURVEY
+
+## 3.1 NEXT.JS VS. TRADITIONAL REACT
+React.js has revolutionized web development by introducing a component-based architecture. Next.js, built on top of React, adds critical features like Server-Side Rendering (SSR) and Static Site Generation (SSG). For a resume builder, Next.js is superior because:
+- Faster initial page loads.
+- Better SEO for public profiles.
+- Built-in routing and API handling.
+
+## 3.2 SUPABASE: THE OPEN SOURCE FIREBASE ALTERNATIVE
+Traditionally, developers had to manage their own servers and databases. Modern BaaS (Backend as a Service) platforms like Supabase provide:
+- Real-time PostgreSQL database.
+- Secure Authentication with JWT.
+- Row-Level Security (RLS) for data privacy.
+
+---
+
+# 4. SYSTEM REQUIREMENT ANALYSIS
+
+## 4.1 FUNCTIONAL REQUIREMENTS
+1. User Authentication: Secure login/signup.
+2. Data Persistence: Resumes must be saved and retrievable.
+3. Live Preview: Instant feedback on data entry.
+4. Template Switching: Swap designs without data loss.
+5. PDF Export: High-fidelity generation.
+
+## 4.2 NON-FUNCTIONAL REQUIREMENTS
+- Performance: Preview updates in < 100ms.
+- Scalability: Support for thousands of concurrent users.
+- Security: End-to-end encryption for user data.
+
+---
+
+# 5. SYSTEM DESIGN & ARCHITECTURE
+
+## 5.1 SYSTEM ARCHITECTURE
+The system uses a 3-tier architecture:
+1. **Presentation Layer**: Next.js (React) + Tailwind CSS.
+2. **Logic Layer**: Next.js API Routes (Serverless functions).
+3. **Data Layer**: Supabase (PostgreSQL).
+
+[IMAGE: template_modern_ai_1778698574877.png | Figure 2: The Modern AI Template Interface]
+
+---
+
+# 6. TECHNICAL IMPLEMENTATION
+
+## 6.1 DATABASE SCHEMA
+The database is structured to support relational data for complex resumes.
+
+```sql
+CREATE TABLE resumes (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES auth.users(id),
+  data JSONB NOT NULL,
+  template_id TEXT DEFAULT 'modern',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+```
+
+## 6.2 TEMPLATE ENGINE ARCHITECTURE
+The template engine uses a "Factory Pattern" to select the appropriate React component based on the user's choice.
+
+---
+
+# 7. UX DESIGN & TEMPLATE ANALYSIS
+
+## 7.1 MODERN AI TEMPLATE
+Designed for technical roles, focusing on clean lines and bold headers.
+[IMAGE: template_modern_ai_1778698574877.png | Figure 3: Modern AI Template - Minimalist and Impactful]
+
+## 7.2 EXECUTIVE PROFESSIONAL
+A traditional two-column layout optimized for corporate and management positions.
+[IMAGE: template_corporate_professional_1778698667541.png | Figure 4: Executive Professional Template]
+
+## 7.3 MODERN CREATIVE
+Uses a colored sidebar to highlight skills and contact info, perfect for designers.
+[IMAGE: template_modern_creative_1778698741933.png | Figure 5: Modern Creative Template]
+
+## 7.4 MODERN TECH
+A high-contrast dark-themed template for software engineers and developers.
+[IMAGE: template_modern_tech_1778698775717.png | Figure 6: Modern Tech Template]
+
+## 7.5 ELEGANT SERIF
+Uses serif fonts (Merriweather) for a classic, academic look.
+[IMAGE: template_elegant_serif_clean_1778698816640.png | Figure 7: Elegant Serif Template]
+
+## 7.6 BLUE CV
+A simple, professional layout with a blue color accent for headers.
+[IMAGE: template_blue_cv_1778698836388.png | Figure 8: Blue CV Template]
+
+## 7.7 BEIGE MINIMAL
+A warm, minimalist design for humanities and non-technical roles.
+[IMAGE: template_beige_minimal_1778698839199.png | Figure 9: Beige Minimal Template]
+
+---
+
+# 8. TESTING & QUALITY ASSURANCE
+
+## 8.1 UNIT TESTING
+Testing individual components like `PersonalInfo` and `Experience` forms to ensure state management is correct.
+
+## 8.2 INTEGRATION TESTING
+Verifying the end-to-end flow from "Start Building" to "Download PDF".
+
+---
+
+# 10. SOFTWARE DEVELOPMENT LIFE CYCLE (SDLC)
+
+## 10.1 PLANNING PHASE
+Initial research involved identifying the most common pain points in resume building. We decided on a "Single Page Application" (SPA) approach to minimize page reloads and provide a snappy user experience.
+
+## 10.2 ANALYSIS PHASE
+We analyzed the requirements for ATS (Applicant Tracking System) compatibility. We learned that standard fonts (Arial, Helvetica) and clear section headers are critical.
+
+## 10.3 DESIGN PHASE
+Using Figma, we designed the cyberpunk landing page and the dual-pane builder interface. The goal was "Information at a Glance".
+
+## 10.4 IMPLEMENTATION PHASE
+This phase involved 8 weeks of coding, divided into sprints. We used GitHub for version control and Vercel for continuous deployment.
+
+---
+
+# 11. DATABASE ARCHITECTURE & SCALABILITY
+
+## 11.1 THE CHOICE OF POSTGRESQL
+PostgreSQL was chosen for its reliability and its support for JSONB data types. This allows us to store unstructured resume data while still maintaining the speed of a relational database.
+
+## 11.2 ROW-LEVEL SECURITY (RLS)
+Security is paramount. With Supabase RLS, we ensure that a user can only access their own resume records:
+```sql
+CREATE POLICY "Users can only see their own resumes" 
+ON resumes FOR ALL
+USING (auth.uid() = user_id);
+```
+
+---
+
+# 12. REACT STATE MANAGEMENT
+
+## 12.1 THE POWER OF USESTATE AND USEEFFECT
+We avoided complex state libraries like Redux to keep the application lightweight. Instead, we used React's built-in `useState` for the resume data and `useEffect` for persistence.
+
+```typescript
+const [data, setData] = useState(initialData);
+
+useEffect(() => {
+  const saved = localStorage.getItem('resume_data');
+  if (saved) setData(JSON.parse(saved));
+}, []);
+
+useEffect(() => {
+  localStorage.setItem('resume_data', JSON.stringify(data));
+}, [data]);
+```
+
+---
+
+# 13. DETAILED CODE WALKTHROUGH
+
+## 13.1 THE BUILDER PAGE (app/builder/page.tsx)
+The orchestrator of the entire application. It manages the communication between the form and the preview.
+
+## 13.2 THE RESUME FORM (components/resume/resume-form.tsx)
+A dynamic multi-section form that handles arrays of objects for Experience and Education.
+
+## 13.3 THE PDF ENGINE (components/resume/resume-preview.tsx)
+The most complex part of the system, handling the conversion of HTML to a print-ready PDF using `react-to-print`.
+
+---
+
+# 14. MAINTENANCE & TROUBLESHOOTING
+
+## 14.1 COMMON ISSUES
+- **Font Rendering**: Sometimes custom fonts don't load in the PDF.
+- **Solution**: We embedded the fonts directly using `@font-face` in the print styles.
+
+## 14.2 SYSTEM LOGGING
+We used Supabase's built-in logs to track API errors and authentication failures.
+
+---
+
+# 15. USER FEEDBACK & ITERATIONS
+
+## 15.1 BETA TESTING RESULTS
+Initial users wanted a "Template Switcher" that didn't hide the form.
+- **Iteration**: We implemented a side-drawer that overlays the preview rather than replacing the form.
+
+---
+
+---
+
+# 17. DETAILED TEMPLATE STYLING LOGIC
+
+## 17.1 THE MODERN TEMPLATE
+Uses a clean, white background with `primary` color accents. The header is justified, and section titles are bold and uppercase.
+
+## 17.2 THE CREATIVE TEMPLATE
+Features a sidebar with a dark background (`bg-[#2a303c]`). It uses `flex-row` to split the layout.
+
+## 17.3 THE CORPORATE TEMPLATE
+Focuses on serif fonts and centered alignment, providing a more formal and academic look.
+
+---
+
+# 18. APPENDICES
+
+## 18.1 FULL SOURCE CODE: MAIN LOGIC (app/builder/page.tsx)
+```tsx
+"use client"
+import { useState, useEffect } from "react"
+import { initialResumeData, ResumeData } from "@/lib/types"
+
+function BuilderContent() {
+    const [data, setData] = useState<ResumeData>(initialResumeData)
+    useEffect(() => {
+        const savedData = sessionStorage.getItem("resume_builder_data")
+        if (savedData) setData(JSON.parse(savedData))
+    }, [])
+
+    const updateData = (newData: Partial<ResumeData>) => {
+        setData((prev) => ({ ...prev, ...newData }))
+    }
+
+    return (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
+            <ResumeForm data={data} updateData={updateData} />
+            <ResumePreview data={data} />
+        </div>
+    )
+}
+```
+
+## 18.2 FULL SOURCE CODE: DATA TYPES (lib/types.ts)
+```typescript
+export interface ResumeData {
+    personalInfo: PersonalInfo;
+    experience: Experience[];
+    education: Education[];
+    skills: Skill[];
+    projects: Project[];
+    certifications: Certification[];
+    achievements: Achievement[];
+    languages: Language[];
+    links: Link[];
+}
+
+export interface PersonalInfo {
+    firstName: string;
+    lastName: string;
+    jobTitle: string;
+    email: string;
+    phone: string;
+    address: string;
+    linkedin: string;
+    website: string;
+    summary: string;
+}
+```
+
+## 18.3 FULL SOURCE CODE: TEMPLATE ENGINE (components/resume/resume-preview.tsx)
+```tsx
+"use client"
+import { useRef, useState } from "react"
+import { Download, Loader2 } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { ResumeData } from "@/lib/types"
+import { useReactToPrint } from "react-to-print"
+
+// MODERN TEMPLATE IMPLEMENTATION
+const ModernTemplate = ({ data }: { data: ResumeData }) => {
+    const { personalInfo, experience, education, skills, projects, certifications, achievements, languages, links } = data;
+    return (
+        <div className="flex flex-col space-y-6 font-sans">
+            <div className="border-b-[2px] border-primary pb-4">
+                <h1 className="text-4xl font-bold uppercase tracking-wide text-primary pb-1">
+                    {personalInfo.firstName || "FIRST"} {personalInfo.lastName || "LAST"}
+                </h1>
+                <div className="flex flex-wrap items-center gap-x-3 mt-2 text-sm text-muted-foreground">
+                    {personalInfo.email && <span>{personalInfo.email}</span>}
+                    {personalInfo.phone && <span>• {personalInfo.phone}</span>}
+                    {personalInfo.address && <span>• {personalInfo.address}</span>}
+                </div>
+            </div>
+            {experience.length > 0 && (
+                <div>
+                    <h2 className="text-lg font-bold uppercase mb-3 text-primary tracking-wider">Experience</h2>
+                    <div className="space-y-4">
+                        {experience.map((exp) => (
+                            <div key={exp.id}>
+                                <div className="flex justify-between items-baseline mb-1">
+                                    <h3 className="font-bold text-base">{exp.position}</h3>
+                                    <span className="text-sm font-medium text-muted-foreground">{exp.startDate} - {exp.endDate}</span>
+                                </div>
+                                <div className="text-sm font-semibold text-primary/80 mb-2">{exp.company}</div>
+                                <div className="text-sm whitespace-pre-wrap ml-4">{exp.description}</div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+```
+
+## 18.4 BIBLIOGRAPHY
+1. Next.js Documentation. (2024). https://nextjs.org
+2. Supabase Documentation. (2024). https://supabase.com
+3. ReportLab Documentation. (2024). https://www.reportlab.com

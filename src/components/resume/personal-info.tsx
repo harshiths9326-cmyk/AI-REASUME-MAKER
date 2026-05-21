@@ -3,15 +3,14 @@
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { PersonalInfo as PersonalInfoType, ResumeData } from "@/lib/types"
+import { PersonalInfo as PersonalInfoType } from "@/lib/types"
 
 interface PersonalInfoProps {
     data: PersonalInfoType
-    fullData?: ResumeData
     updateData: (data: PersonalInfoType) => void
 }
 
-export function PersonalInfo({ data, fullData, updateData }: PersonalInfoProps) {
+export function PersonalInfo({ data, updateData }: PersonalInfoProps) {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         updateData({ ...data, [e.target.name]: e.target.value })
     }

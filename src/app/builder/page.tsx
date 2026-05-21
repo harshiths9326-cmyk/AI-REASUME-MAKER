@@ -1,36 +1,46 @@
 "use client"
 
-import { useState, useEffect, Suspense } from "react"
+import { useState, useEffect, Suspense, useRef } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { initialResumeData, ResumeData } from "@/lib/types"
 import { ResumeForm } from "@/components/resume/resume-form"
 import { ProfileProgressBar } from "@/components/resume/progress-bar"
 import { ResumePreview } from "@/components/resume/resume-preview"
 import { TemplateSwitcher } from "@/components/resume/template-switcher"
+import { AIResumeScorer } from "@/components/resume/ai-resume-scorer"
+import { JobDescriptionMatcher } from "@/components/resume/job-description-matcher"
+import { CoverLetterGenerator } from "@/components/resume/cover-letter-generator"
+import { AIResumeGenerator } from "@/components/resume/ai-resume-generator"
 
 function BuilderContent() {
     const router = useRouter()
     const searchParams = useSearchParams()
     const templateId = searchParams.get("template") || "modern"
+    const isInitialLoad = useRef(true)
+    
+    // Always start with default data for SSR compatibility
+    // Client will hydrate from sessionStorage in useEffect
     const [data, setData] = useState<ResumeData>(initialResumeData)
 
-    // Load data from sessionStorage on mount
+    // Load saved data from sessionStorage on client mount
     useEffect(() => {
-        const savedData = sessionStorage.getItem("resume_builder_data")
-        if (savedData) {
-            try {
-                setData(JSON.parse(savedData))
-            } catch (e) {
-                console.error("Failed to load saved resume data:", e)
+        try {
+            const savedData = sessionStorage.getItem("resume_builder_data")
+            if (savedData) {
+                const parsed = JSON.parse(savedData)
+                // eslint-disable-next-line react-hooks/set-state-in-effect -- legitimate hydration from external store
+                setData(parsed)
             }
+        } catch (e) {
+            console.error("Failed to load saved resume data:", e)
         }
+        isInitialLoad.current = false
     }, [])
 
-    // Save data to sessionStorage on change
+    // Save data to sessionStorage on change (skip initial load to avoid overwriting)
     useEffect(() => {
-        if (data !== initialResumeData) {
-            sessionStorage.setItem("resume_builder_data", JSON.stringify(data))
-        }
+        if (isInitialLoad.current) return
+        sessionStorage.setItem("resume_builder_data", JSON.stringify(data))
     }, [data])
 
     const updateData = (newData: Partial<ResumeData>) => {
@@ -53,6 +63,12 @@ function BuilderContent() {
                             <h2 className="font-bold">Resume Editor</h2>
                             <TemplateSwitcher currentTemplate={templateId} onSelect={handleTemplateSelect} />
                         </div>
+                        <div className="flex gap-2">
+                            <AIResumeGenerator updateData={updateData} />
+                            <AIResumeScorer resumeData={data} />
+                            <JobDescriptionMatcher resumeData={data} updateData={updateData} />
+                            <CoverLetterGenerator resumeData={data} />
+                        </div>
                     </div>
                     <ProfileProgressBar data={data} />
                     <div className="flex-1 overflow-y-auto">
@@ -62,7 +78,7 @@ function BuilderContent() {
 
                 {/* Preview Section */}
                 <div className="flex flex-col h-full overflow-hidden border rounded-xl bg-zinc-100 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 shadow-sm relative">
-                    <ResumePreview data={data} template={templateId} updateData={updateData} />
+                    <ResumePreview data={data} template={templateId} />
                 </div>
             </div>
         </div>

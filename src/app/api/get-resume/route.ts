@@ -1,14 +1,22 @@
 import { NextResponse } from "next/server"
 import { supabase } from "@/lib/supabase"
+import { z } from "zod"
+
+// Validation schema
+const getResumeSchema = z.object({
+    id: z.string().min(1, "Resume ID is required"),
+})
 
 export async function GET(req: Request) {
     try {
         const { searchParams } = new URL(req.url)
         const id = searchParams.get("id")
 
-        if (!id) {
+        // Validate request parameters
+        const validationResult = getResumeSchema.safeParse({ id })
+        if (!validationResult.success) {
             return NextResponse.json(
-                { error: "Resume ID is required" },
+                { error: "Invalid resume ID", details: validationResult.error.issues },
                 { status: 400 }
             )
         }
@@ -26,7 +34,7 @@ export async function GET(req: Request) {
         const { data, error } = await supabase
             .from('resumes')
             .select('*')
-            .eq('id', id)
+            .eq('id', validationResult.data.id)
             .eq('user_id', user.id)
             .single()
 

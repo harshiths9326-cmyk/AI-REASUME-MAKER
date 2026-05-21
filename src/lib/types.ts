@@ -21,11 +21,14 @@ export interface Experience {
 
 export interface Education {
     id: string;
-    school: string;
-    degree: string;
+    institutionName: string;       // School/College/University name
+    institutionAddress: string;    // City, State
+    course: string;                // e.g., Science, Commerce, Computer Science (PUC/Degree)
+    degree: string;                // e.g., SSLC, PUC, B.Tech, B.Sc, B.Com
+    marks: string;                 // e.g., "85%", "8.5 CGPA"
     startDate: string;
     endDate: string;
-    description: string;
+    description: string;           // Additional details
 }
 
 export interface Skill {

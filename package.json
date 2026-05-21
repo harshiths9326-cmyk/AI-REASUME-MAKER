@@ -26,7 +26,8 @@
     "react-to-pdf": "^3.2.1",
     "react-to-print": "^3.3.0",
     "tailwind-merge": "^3.5.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
